@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th ="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>スタート画面</title>
+	<style>
+		body{
+			text-align: center;
+			font-size: 30px;
+			Background-color: white;
+			color: black;
+		}
+		.content{
+			font-size: 50px;
+		}
+		.items{
+			margin:250px auto;
+		}
+		button{
+			width:8em;
+			height:2em;
+			font-size:50px;
+			border-radius: 5px;
+			background-color:rgb(0, 64, 64);
+			box-shadow: 0 0 8px rgba(0, 0, 0, .4);
+		}
+	</style>
+</head>
+
+<body>
+	<form th:action = "@{/send}" method="post">
+		<div>
+			<h1 class = "content">[[${name}]]さん用意はいいですか？</h1>
+		</div>
+		<div>
+			<p for="name">なんか書く？？</p>
+		</div>
+		<div class = "items">
+			<button type="submit">スタート</button>
+		</div>
+	</form>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>クイズ画面</title>
+</head>
+<body>
+<!-- 問題表示フォーム -->
+<!--	<div th:each="quiz, iterStat : ${quizzes}">-->
+	<div>
+		<p th:text="${'問題' + quiz.id}"></p>
+		<img th:src="@{quizimages/{imageName}(imageName=${'image' + quiz.id + '.PNG'})}" alt="Quiz Image">
+		<!-- <p th:text="${quiz.quizName}"></p> -->
+	</div>
+<!-- 入力フォーム -->
+	<form th:action="@{/submitAnswer}" method="post" th:object="${quizForm}">
+		<input type="hidden" th:field="*{quizId}">
+		<label for="userAnswer">あなたの解答:</label>
+		<input type="text" th:field="*{quizAnswer}">
+		<input type="submit" value="回答する">
+	</form>
+	
+<!-- 結果表示フォーム -->
+	<p th:text="${resultMessage}"></p>
+	
+<!-- ボタン -->
+	<a th:href="@{/returnTopPage}">
+		<button type="button">TOPページへ戻る</button>
+	</a>
+</body>
+</html>

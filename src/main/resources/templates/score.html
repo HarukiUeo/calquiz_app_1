@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>score</title>
+</head>
+<body>
+		
+	<h1 th:align="CENTER">～結果発表～</h1>
+	
+	<div th:align="CENTER">
+		<h2>Player Information</h2>
+<!--		<p th:text="${newUserMessage}">-->
+			[[${newUser.name}]]さんは[[${newUser.score}]]点でした。<br>
+			全体ランキングの[[${newUser.rank}]]位です。
+		</p>
+	</div>
+		
+	<div th:unless="${newUser.rank}==1" th:align="CENTER">
+<!--		<p th:text="${newUserMessage2}">-->
+			<p th:with="rankUp=1">
+				次は[[${newUser.rank}-1]]位を目指してみましょう！
+			</p>
+		</p>
+	</div>
+	
+	<br>
+	
+	<h2 th:align="CENTER">--- 全体ランキング ---</h2>
+	<table border="1" th:align="CENTER">
+		<tr>
+			<th>Rank</th>
+			<th>Name</th>
+			<th>Score</th>
+		</tr>
+		<th:block th:each="user:${topScores}">
+			<tr>
+				<td th:text="${user.rank}"></td>
+				<td th:text="${user.name}"></td>
+				<td th:text="${user.score}"></td>
+			</tr>
+		</th:block>
+		
+	</table>
+		
+	<br>
+	<div th:align="CENTER">
+		<a th:href="@{/showForm}" method="get">スタート画面に戻る</a>
+	</div>
+	
+</body>
+</html>

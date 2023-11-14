@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>キャルクイズ</title>
+</head>
+<style>
+	body{
+		Background-color: white;
+		color: black;
+	}
+	.title{
+		text-align: center;
+		font-size: 50px;
+	}
+	.body{
+		text-align: center;	
+		font-size: 30px;
+	}
+	.items{
+		text-align: center;	
+		font-size: 20px;
+	}
+</style>
+<body>
+	<h1 class="title">キャルクイズ</h1>
+		<div class="body">
+			<p>ここは説明文だよ～</p>
+			<p>2行目の文だよ～</p>
+		</div>
+<!--		<div class="items">-->
+	
+	<form class="items" th:action="@{/confirm}" method="post" th:object="${userForm}">
+		<ul th:if="${#fields.hasErrors('*')}">
+			<p th:each="err:${#fields.errors('*')}" th:text="${err}" style="color:red"></p>
+		</ul>
+		<p>名前：
+				<input type="text" th:field="*{name}" />
+				<button type="submit">確定</button>
+				
+		</p>
+<!--		</div>-->
+	</form>
+</body>
+</html>
