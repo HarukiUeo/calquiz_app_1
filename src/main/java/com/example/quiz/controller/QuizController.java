@@ -87,7 +87,6 @@ public class QuizController {
 		    redirectAttributes.addFlashAttribute("resultMessage", "不正解です・・・");
 		    return "redirect:/show";
 		}
-		
 	}
 	
 	//TOPページへ遷移させる

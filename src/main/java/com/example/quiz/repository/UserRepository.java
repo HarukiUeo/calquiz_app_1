@@ -13,6 +13,7 @@ import com.example.quiz.entity.User;
  * @author Yuma Matui
  * @version 1.0.0
  */
+
 public interface UserRepository extends JpaRepository<User, Integer> {
 
 	/**
@@ -28,4 +29,19 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	 * @return IDの降順で最初のユーザー。
 	 */
 	User findFirstByOrderByIdDesc();
-}
+	
+
+		/**
+		 * ユーザー名でユーザーを取得、ログイン状態であるユーザーの取得、ユーザー名とパスワードでユーザーを取得
+		 * 以上の機能を追加しました。
+		 * @author 浜田真由美
+		 * 
+		 */
+		//大文字小文字を変えないでください。バグるよ！！
+	    User findByName(String name);
+
+	    User findByLoggedin(Boolean loggedIn);
+	    
+	    User findByNameAndPassword(String name, String password);
+	}
+

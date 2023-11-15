@@ -18,6 +18,8 @@ import lombok.NoArgsConstructor;
 * @param name ユーザーの名前
 * @param score ユーザーの点数
 * @param rank ユーザーのランキング 
+* @param loggedin ユーザーのログイン状態　※loggedInに絶対にしないでください。
+			JpaリポジトリーのUser findByLoggedin(Boolean loggedIn)でエラーが起きます。findByLoggedInでも同様です。
 * @author Haruki Ueo
 * @author Yuma Matui
 * @version 1.0.0
@@ -32,6 +34,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+	
     @Column(name = "name", nullable = false, length = 50)
     private String name;
     
@@ -40,4 +43,17 @@ public class User {
     
     @Column(name = "rank", nullable = false)
     private Integer rank;
+    
+    /**
+     * @param loggedin userのログイン状態 ※loggedInに絶対にしないでください！！
+      			JpaリポジトリのUser findByLoggedin(Boolean loggedIn)でエラーが起きます。findByLoggedInでも同様です。
+     * @param password userのパスワード 					
+     * @author 浜田真由美
+     */
+    @Column(name = "loggedIn")
+    private Boolean loggedin;
+    
+    @Column(name = "password")
+    private String password;
+    
 }
