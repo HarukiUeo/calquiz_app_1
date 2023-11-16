@@ -9,6 +9,11 @@ import org.springframework.stereotype.Service;
 import com.example.quiz.entity.User;
 import com.example.quiz.repository.UserRepository;
 
+/**
+ * ユーザー情報を取り扱うサービスを実装したクラス
+ * @version 1.0.1
+ */
+
 @Service
 public class ImplUserService implements UserService{
 	
@@ -26,4 +31,20 @@ public class ImplUserService implements UserService{
 		Optional<User> userOpt = repository.findById(id);
 		return userOpt.get();
 	}
+	
+	@Override
+	public List<User> findTop10ByOrderByScoreDesc() {
+		return repository.findTop10ByOrderByScoreDesc();
+	}
+
+	@Override
+	public User findFirstByOrderByIdDesc() {
+		return repository.findFirstByOrderByIdDesc();
+	}
+
+	@Override
+	public void saveUser(User user) {
+		repository.save(user);
+	}
+
 }

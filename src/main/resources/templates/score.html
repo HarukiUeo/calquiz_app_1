@@ -45,7 +45,15 @@
 		
 	<br>
 	<div th:align="CENTER">
-		<a th:href="@{/showForm}" method="get">スタート画面に戻る</a>
+<!--	アカウント持ちユーザはスタート画面に戻るようにしたい-->
+	<form th:action="@{/start}" method="post">
+		<input type="hidden" name="userId" th:value="${newUser.id}">
+		<button type="submit">もう一度挑戦する</button>
+	</form>
+<!--	ゲストモードプレーヤーはTOPページに戻る-->
+	<form th:action="@{/returnTopPage}" method="post">
+		<button type="submit">TOPページへ戻る</button>
+	</form>
 	</div>
 	
 </body>

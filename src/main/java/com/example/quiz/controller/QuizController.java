@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.quiz.entity.Quiz;
@@ -20,15 +21,15 @@ import com.example.quiz.service.ImplUserService;
 * Javadoc用コメントのテストプログラム
 * @author 宮崎・中村
 * @Date 2023_11_16
-* @version 1.0.1
+* @version 1.0.2
 */
 
 @Controller
 public class QuizController {
 	
-	private Integer quizNum=1;
-	
-	private Integer score=0;
+//	private Integer quizNum=1;
+//	
+//	private Integer score=0;
 
 	@Autowired
 	ImplQuizService quizService;
@@ -49,7 +50,6 @@ public class QuizController {
 	@ModelAttribute
 	public QuizForm setUpForm() {
 		QuizForm form = new QuizForm();
-		form.setQuizId(quizNum);
 		return form;
 	}
 	
@@ -61,30 +61,43 @@ public class QuizController {
 	   */
 	
 	@GetMapping("show")
-	public String showPlayScreen(Model model) {
+	public String showPlayScreen(@RequestParam Integer userId, @RequestParam Integer quizNum, Model model) {
 		Quiz quiz = quizService.selectOneQuizById(quizNum);
+		User user = userService.selectOneUserById(userId);
 		model.addAttribute("quiz",quiz);
+		model.addAttribute("user",user);
 		return "playScreen";
 	}
 	
 	//解答チェック機能
 	@PostMapping("/submitAnswer")
-    public String submitAnswer(QuizForm quizForm, Model model,RedirectAttributes redirectAttributes) {
-		Quiz quiz = quizService.selectOneQuizById(quizForm.getQuizId());
+    public String submitAnswer(@RequestParam("userId") String uId, @RequestParam("quizId") String qId,
+    	QuizForm quizForm, Model model,RedirectAttributes redirectAttributes) {
+		Integer quizId = Integer.parseInt(qId);
+		Integer userId = Integer.parseInt(uId);
+		redirectAttributes.addAttribute("userId", userId);
+		Quiz quiz = quizService.selectOneQuizById(quizId);
 		if (quizForm.getQuizAnswer().equals(quiz.getAnswer())) {
 		    redirectAttributes.addFlashAttribute("resultMessage","正解です！");
-		    score++;
+
+		    User user=userService.selectOneUserById(userId);
+		    // 正解すると以下の点数を加算
+		    int score = 1;
+		    user.setScore(user.getScore()+score);
+		    repository.save(user);
+		    
+		    Integer quizNum = quizId;
 		    quizNum++;
+		    
 		    if(quizNum > 8) {//8はDBの列の長さに変えてください
-		    	User user= repository.findFirstByOrderByIdDesc();
-		    	user=userService.selectOneUserById(user.getId());
-		    	user.setScore(score);
-		    	repository.save(user);
+		    	model.addAttribute(user);
 		    	return "quizResult"; 
 		    }
+		    redirectAttributes.addAttribute("quizNum", quizNum);
 		    return "redirect:/show";
 		} else {
 		    redirectAttributes.addFlashAttribute("resultMessage", "不正解です・・・");
+		    redirectAttributes.addAttribute("quizNum", quizId);
 		    return "redirect:/show";
 		}
 	}
@@ -111,7 +124,7 @@ public class QuizController {
 	@PostMapping("/returnTopPage")
 	public String returnTopPage() {
 		//userのscoreを全クリアする処理
-		return "top";//小林さん担当ページ
+		return "redirect:showForm";//小林さん担当ページ
 	}
 	
 	//スコア・ランキング表示画面へ遷移させる

@@ -10,8 +10,8 @@ import com.example.quiz.entity.User;
  * Userエンティティを管理するためのリポジトリインターフェースです。
  * このインターフェースはJpaRepositoryを拡張して、基本的なCRUD操作を継承しています。
  * @author Haruki Ueo
- * @author Yuma Matui
- * @version 1.0.0
+ * @author Yuma Matsui
+ * @version 1.0.2
  */
 
 public interface UserRepository extends JpaRepository<User, Integer> {
@@ -43,5 +43,13 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	    User findByLoggedin(Boolean loggedIn);
 	    
 	    User findByNameAndPassword(String name, String password);
+	    /**
+	     * ログイン状態かつユーザーIDが一致するユーザーを取得する
+	     * @param loggedIn ユーザーのログイン状態
+	     * @param userId ユーザーのID
+	     * @return　引数で受け取ったloggedIn,userIdが一致するユーザーを返す
+	     * @author Yuma Matsui
+	     */
+	    User findByLoggedinAndId(Boolean loggedIn,Integer userId);
 	}
 

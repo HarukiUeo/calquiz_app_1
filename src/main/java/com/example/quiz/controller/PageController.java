@@ -8,21 +8,27 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.quiz.entity.User;
 import com.example.quiz.form.UserForm;
 import com.example.quiz.form.UserLogForm;
 import com.example.quiz.form.UserNewLogForm;
 import com.example.quiz.repository.UserRepository;
+import com.example.quiz.service.ImplUserService;
 
 /**
  * @author Anzu Kobayasi
- * @vertion 1.0.0
+ * @vertion 1.0.1
  */
 @Controller
 public class PageController {
 	@Autowired
 	private UserRepository repository;
+	
+	@Autowired
+	private ImplUserService userService;
 	
 	@ModelAttribute
 	public UserForm setUpForm() {
@@ -41,6 +47,11 @@ public class PageController {
 
 	@GetMapping("showForm")
 	public String showForm() {
+//		User user = new User();
+//		user=repository.findByLoggedinAndId(true,1);
+//			user.setScore(0);
+//			user.setRank(0);
+		
 		return "top";
 	}
 	
@@ -58,7 +69,7 @@ public class PageController {
 		
 		repository.save(user);
 		//Modelに格納する
-		model.addAttribute("name", user.getName());
+		model.addAttribute("user", user);
 		return "start";
 	}
 	
@@ -71,7 +82,15 @@ public class PageController {
 	//redirectじゃないとplayScreen.htmlのquiz.idにnull値が入るようになっていたので修正しています。
 	//恐らくQuizControllerが上手く処理されない為。
 	@PostMapping("send")
-	public String showQuizView() {
+	public String showQuizView(@RequestParam("userId") String id, Model model,
+			RedirectAttributes redirectAttributes) {
+		Integer userId = Integer.parseInt(id);
+		redirectAttributes.addAttribute("userId", userId);
+		//１問目から表示されるように
+		redirectAttributes.addAttribute("quizNum", 1);
+		User user = userService.selectOneUserById(userId);
+		user.setScore(0);
+		repository.save(user);
 		return "redirect:/show";
 	}
 	
@@ -93,13 +112,24 @@ public class PageController {
         if (bindingResult.hasErrors()) {
             return "registerPage";
         }
-
+        
+        /**
+         * ユーザー名がデータベースに存在しないか確認
+         * @author Haruki Ueo
+         */
+        // データベースに同じユーザー名が存在できないようにしました。
+        if (repository.findByName(form.getName()) != null) {
+        	model.addAttribute("errorMessage", "既に存在するユーザー名です");
+        	return "registerPage";
+        }
+        
         // パスワードと確認用パスワードの一致を確認
         if (!form.getPassword().equals(form.getConfirmPassword())) {
             model.addAttribute("errorMessage", "パスワードが一致しません");
             return "registerPage";
         }
-
+        
+        
 
         // 新しいユーザーを登録
         User user=new User();
@@ -112,7 +142,7 @@ public class PageController {
         repository.save(user);
 
         // ログイン状態になり、名前入力画面に戻る
-        model.addAttribute("name", user.getName());
+        model.addAttribute("user", user);
         return "start";
     }
 
@@ -135,7 +165,7 @@ public class PageController {
         // ログイン状態になり、名前入力画面に戻る
         user.setLoggedin(true);
         repository.save(user);
-        model.addAttribute("name", user.getName());
+        model.addAttribute("user", user);
         return "start";
     }
     
@@ -146,14 +176,12 @@ public class PageController {
     // ログアウト処理
     @PostMapping("logout")
     public String logoutUser(Model model) {
-        // ログイン中のユーザーを取得
         User user = repository.findByLoggedin(true);
         if (user != null) {
             // ログイン状態を解除
             user.setLoggedin(false);
             repository.save(user);
         }
-
         // 最初の名前入力画面に戻る
         return "top";
     }
