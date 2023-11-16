@@ -24,21 +24,21 @@ public class DataInitialization {
 
     @PostConstruct
     public void init() {
-        createAndSaveQuizIfNotExists("image1", "かめら");
-        createAndSaveQuizIfNotExists("image2", "ROBOT");
-        createAndSaveQuizIfNotExists("image3", "8");
-        createAndSaveQuizIfNotExists("image4", "FISH");
-        createAndSaveQuizIfNotExists("image5", "タイム");
-        createAndSaveQuizIfNotExists("image6", "地球");
-        createAndSaveQuizIfNotExists("image7", "ピーチ");
-        createAndSaveQuizIfNotExists("image8", "PERFECT");
+        createAndSaveQuizIfNotExists("image1", "かめら","hint1");
+        createAndSaveQuizIfNotExists("image2", "ROBOT","hint2");
+        createAndSaveQuizIfNotExists("image3", "8","hint3");
+        createAndSaveQuizIfNotExists("image4", "FISH","hint4");
+        createAndSaveQuizIfNotExists("image5", "タイム","hint5");
+        createAndSaveQuizIfNotExists("image6", "地球","hint6");
+        createAndSaveQuizIfNotExists("image7", "ピーチ","hint7");
+        createAndSaveQuizIfNotExists("image8", "PERFECT","hint8");
     }
     /**
      * 引数で受け取ったquizNameとanswerをデータベースに登録するメソッドです。
      * @param name QuizEntityのquizNameに設定する値を受け取ります。
      * @param answer QuizEntityのanswerに設定する値を受け取ります。
      */
-    private void createAndSaveQuizIfNotExists(String quizName, String answer) {
+    private void createAndSaveQuizIfNotExists(String quizName, String answer,String hint) {
         // 既存のデータを探す
         Quiz existingName = quizRepository.findByQuizName(quizName);
 
@@ -47,6 +47,7 @@ public class DataInitialization {
             Quiz quiz = new Quiz();
             quiz.setQuizName(quizName);
             quiz.setAnswer(answer);
+            quiz.setHint(hint);
 
             quizRepository.save(quiz);
         }

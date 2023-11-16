@@ -10,7 +10,14 @@
 <!--	<div th:each="quiz, iterStat : ${quizzes}">-->
 	<div>
 		<p th:text="${'問題' + quiz.id}"></p>
+	<!-- ヒント表示フォーム -->
+		<form th:action="@{/showHint}" method="post">
+    		<input type="hidden" name="quizId" th:value="${quizForm.quizId}" />
+    		<p th:if="${hint}"th:text="${hint}"></p>
+    		<button type="submit" th:unless="${hint}">ヒントを見る</button>
+		</form>
 		<img th:src="@{quizimages/{imageName}(imageName=${'image' + quiz.id + '.PNG'})}" alt="Quiz Image">
+	</div>
 		<!-- <p th:text="${quiz.quizName}"></p> -->
 	</div>
 <!-- 入力フォーム -->

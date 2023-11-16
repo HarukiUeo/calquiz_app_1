@@ -19,8 +19,8 @@ import com.example.quiz.service.ImplUserService;
 /**
 * Javadoc用コメントのテストプログラム
 * @author 宮崎・中村
-* @Date 2023_11_13
-* @version 1.0.0
+* @Date 2023_11_16
+* @version 1.0.1
 */
 
 @Controller
@@ -87,6 +87,24 @@ public class QuizController {
 		    redirectAttributes.addFlashAttribute("resultMessage", "不正解です・・・");
 		    return "redirect:/show";
 		}
+	}
+	
+	//問題ごとにヒントを表示させる機能
+	/**
+	 * @Author Kohei Nakamura
+	 * @Date 2023_11_16
+	 * @param quizForm
+	 * @param model
+	 * @param redirectAttributes
+	 * @return 引数で受け取ったクイズフォームからIDを取得してヒントを返します
+	 */
+	@PostMapping("/showHint")
+	public String showHint(QuizForm quizForm, Model model,RedirectAttributes redirectAttributes){
+		Quiz hint = quizService.selectOneQuizById(quizForm.getQuizId());
+		redirectAttributes.addFlashAttribute("hint",hint.getHint());
+		model.addAttribute("quizId", quizForm.getQuizId());
+
+		return "redirect:/show";
 	}
 	
 	//TOPページへ遷移させる

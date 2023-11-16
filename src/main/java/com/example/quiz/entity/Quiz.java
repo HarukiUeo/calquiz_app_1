@@ -10,9 +10,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * @author 宮崎・中村
+/** QuizControllerのEntityクラス
+ * @author 中村
+ * @Date 2023_11_16
+ * @Version 1.0.1
  */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,6 +32,14 @@ public class Quiz {
 	
 	@Column(name="answer")
 	private String answer;
+	
+	/** quizinfoテーブルにhint列(String型)を追加
+	 * @author 中村
+	 * @Date 2023_11_16
+	 */
+	
+	@Column(name="hint")
+	private String hint;
 	
 }
 
