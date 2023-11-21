@@ -2,18 +2,24 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>キャルクイズ</title>
+    <title>QUIZ-BURGER</title>
 </head>
 <style>
     body {
-        Background-color: white;
-        color: black;
+		Background-color: black;
+        color:white;
     }
 
     .title {
         text-align: center;
-        font-size: 50px;
+        font-size: 40px;
     }
+    
+    .mainlogo {
+		display:block;
+		margin-left:auto;
+		margin-right:auto;
+	}
 
     .body {
         text-align: center;
@@ -30,7 +36,8 @@
     }
 </style>
 <body>
-    <h1 class="title">キャルクイズ</h1>
+<!--    <h1 class="title">QUIZ　BURGER</h1> -->
+    <img src="/images/logo1.png" class="mainlogo">
 <div align="CENTER">
     <!-- 名前入力フォーム -->
     <form class="EnterName" th:action="@{/confirm}" method="post" th:object="${userForm}">

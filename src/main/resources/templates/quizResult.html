@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>quizResult</title>
+<link rel="styleSheet" th:href="@{/css/resultCss.css}">
 </head>
 <body>
-	
-	<h1 th:align = "CENTER">正誤一覧</h1>
+	<br>
+	<h1 class="ox" th:align = "CENTER">..*:' 正誤一覧 ':*..</h1>
 	
 	<table border="1" th:align="CENTER">
 			<tr>
@@ -21,11 +22,11 @@
 			</tr>
 		</th>
 	</table>
-	
-	<form th:action="@{/score}" method="post" th:object="${user}">
+	<br>
+	<form th:action="@{/score}" method="post" th:object="${user}" th:align="CENTER">
 		<input type="hidden" name="userId" th:value="${user.id}">
 		<input type="hidden" name="userScore" th:value="${userScore}">
-       	<button type="submit">ランキング</button>
+       	<button class="ranking-button" type="submit">ランキング</button>
 	</form>
 	
 </body>

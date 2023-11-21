@@ -1,0 +1,136 @@
+@charset "UTF-8";
+/**
+background-image:url("/images/logo1.png"); 消して良い、メモ用
+background-repeat:no-repeat;
+background-attachment:fixed;
+background-position:center;
+**/
+html {
+  font-size:62.5%;
+}
+body {
+	font-size:1.4rem;
+	background-image:url("/QuizImages/resultScreen.png");
+	background-repeat:no-repeat;
+	background-attachment:fixed;
+	background-position:center;
+}
+*, *::before, *::after {
+  box-sizing:border-box;
+}
+.clearfix::after {
+  content:'';
+  display:block;
+  clear:both;
+}
+/***********************/
+.ox{
+	text-shadow: 2px 2px 3px #666666,-2px -2px 3px #666666;
+ 	font-size: 3rem;
+  	color: #fff;
+}
+/***********　ランキングボタン　************/ 
+.ranking-button{
+  position: relative;
+  display: inline-block;
+  background-color: rgb(82, 198, 214);
+  padding: 0.8em 2.4em;
+  border-radius: 5px;
+  border: 2px solid transparent;
+
+  /* ボタンの文字の設定 */
+  font-family: 'Quicksand', sans-serif;
+  font-weight: bold;
+  font-size: 12px;
+  color: #fff;
+  letter-spacing: 0.1em;
+
+  /* その他必要なスタイル */
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+/* ハートの共通スタイル */
+.ranking-button::before,
+.ranking-button::after {
+  content: "";
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 40px;
+  height:40px;
+  position: absolute;
+  opacity: 0;
+}
+
+/* 左上のハートのスタイル */
+.ranking-button::before {
+  background-image: url('neonice.svg');
+  top: 0;
+  left: -12px;
+}
+
+/* 右下のハートのスタイル */
+.ranking-button::after {
+  background-image: url('heart-reverse.svg');
+  bottom: -6px;
+  right: -14px;
+}
+
+/* ========= ホバー時のスタイル ======== */
+
+/* ボタンホバー時のスタイル */
+.ranking-button:hover {
+  background-color: #fff;
+  border-color: rgb(128, 255, 255);
+  color: rgb(0, 128, 255);
+}
+
+/* ボタンホバー時の左上のハートのスタイル */
+.ranking-button:hover::before {
+  animation: heart 1.5s infinite ease-out;
+}
+
+/* ボタンホバー時の右下のハートのスタイル */
+.heart-button:hover::after {
+  animation: heart 1.5s 0.2s infinite ease-out;
+}
+
+/* ========= アニメーションの設定 ======== */
+@keyframes heart {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-20px) scale(1.4);
+    opacity: 0;
+  }
+}
+
+/* ========= SPのスタイル ======== */
+@media screen and (max-width: 768px) {
+
+  /* ボタン本体のスタイル */
+  .ranking-button {
+    background-color: #fff;
+    border-color: #ef4b53;
+    color: #ef4b53;
+  }
+  
+  /* 左上のハートのスタイル */
+  .ranking-button::before {
+    animation: heart 1.5s infinite ease-out;
+  }
+
+  /* 右下のハートのスタイル */
+  .ranking-button::after {
+    animation: heart 1.5s 0.2s infinite ease-out;
+  }
+}
+/**********　ランキングボタン終わり　*************/
