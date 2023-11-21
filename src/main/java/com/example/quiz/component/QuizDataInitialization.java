@@ -14,11 +14,11 @@ import jakarta.annotation.PostConstruct;
  */
 //自動でテーブルだけが作成されていたので、初期値を設定できるようにしておきました。
 @Component
-public class DataInitialization {
+public class QuizDataInitialization {
 
     private final QuizRepository quizRepository;
 
-    public DataInitialization(QuizRepository quizRepository) {
+    public QuizDataInitialization(QuizRepository quizRepository) {
         this.quizRepository = quizRepository;
     }
 
