@@ -37,20 +37,37 @@ public class UserController {
 //	}
 	
 	@PostMapping("score")
-	public String showTopScores(@RequestParam("userId") String id, Model model) {
+	public String showTopScores(
+			@RequestParam("userId") String id,
+			@RequestParam("userScore") String uScore,
+			Model model) {
 		
 		Integer userId = Integer.parseInt(id);
+		Integer userScore = Integer.parseInt(uScore);
 		User user = userService.selectOneUserById(userId);
-		
-		List<User> topScores = userService.findTop10ByOrderByScoreDesc();
-		model.addAttribute("topScores",topScores);
 		
 		//現在のプレーヤーがゲストプレイの時のみ可能
 //		User player = userService.findFirstByOrderByIdDesc();
 		
-		/** 現在のプレイヤーIdでスコアを比較する */
+		// IDが0はゲスト(アカウント持ちユーザーのみデータベースに保存)
+		if(userId!=0) {
+			user.setScore(userScore);
+			userService.saveUser(user);
+		}
+		
+		List<User> topScores = userService.findTop10ByOrderByScoreDesc();
+		model.addAttribute("topScores",topScores);
+		
+		/** スコアを比較してランク付け（ゲストユーザーはランキングに反映しない） */
+//		List<User> allUsers = userService.selectAllUsersExceptGuest();
 		List<User> allUsers = userService.selectAllUsers();
 		for(User user1 : allUsers) {
+			
+			// ゲストのランク付けは飛ばす
+			if(user1.getId()==0) {
+				continue;
+			}
+			
 			int playerRank = 1;
 			for(User user2 : allUsers) {
 				if(user2.getScore()>user1.getScore()) {
@@ -62,6 +79,7 @@ public class UserController {
 		}
 		
 		model.addAttribute("newUser",user);
+		model.addAttribute("userScore",userScore);
 		return "score";
 	}
 	

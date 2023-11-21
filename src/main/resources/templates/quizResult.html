@@ -5,9 +5,28 @@
 <title>Insert title here</title>
 </head>
 <body>
+	
+	<h1 th:align = "CENTER">正誤一覧</h1>
+	
+	<table border="1" th:align="CENTER">
+			<tr>
+				<th>クイズNo.</th>
+				<th>　正誤　 </th>
+			</tr>
+		
+		<th:block th:each="content , s : ${ox}">
+			<tr>
+				<td th:text="${s.count}" ></td>
+				<td th:text="${content=='true'}?'〇':'✕'"></td>
+			</tr>
+		</th>
+	</table>
+	
 	<form th:action="@{/score}" method="post" th:object="${user}">
 		<input type="hidden" name="userId" th:value="${user.id}">
-       	<button type="submit">保存</button>
+		<input type="hidden" name="userScore" th:value="${userScore}">
+       	<button type="submit">ランキング</button>
 	</form>
+	
 </body>
 </html>

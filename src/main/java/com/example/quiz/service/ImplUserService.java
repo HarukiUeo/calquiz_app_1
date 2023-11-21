@@ -25,6 +25,13 @@ public class ImplUserService implements UserService{
 		return repository.findAll();
 	}
 
+//	@Override
+//	public List<User> selectAllUsersExceptGuest() {
+//		List<User> list = repository.selectAllAsc();
+//		list.remove(0);
+//		return list;
+//	}
+	
 	@Override
 	public User selectOneUserById(Integer id) {
 		// nullかどうかチェックした方がいい

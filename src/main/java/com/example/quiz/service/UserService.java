@@ -13,6 +13,9 @@ public interface UserService {
 	
 	/** ユーザー情報全件取得 */
 	List<User> selectAllUsers();
+
+//	/** ゲストユーザー以外のユーザー情報全件取得 */
+//	List<User> selectAllUsersExceptGuest();
 	
 	/*ユーザー情報を1件取得 */
 	User selectOneUserById(Integer id);
@@ -25,4 +28,5 @@ public interface UserService {
 	
 	/** ユーザー１件保存 */
 	void saveUser(User user);
+	
 }

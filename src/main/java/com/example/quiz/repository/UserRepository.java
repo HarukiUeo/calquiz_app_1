@@ -30,6 +30,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	 */
 	User findFirstByOrderByIdDesc();
 	
+	//ID昇順でとってくる
+//	@Query("SELECT * FROM userinfo ORDER BY id ASC")
+//	List<User> selectAllAsc();
+	
 
 		/**
 		 * ユーザー名でユーザーを取得、ログイン状態であるユーザーの取得、ユーザー名とパスワードでユーザーを取得

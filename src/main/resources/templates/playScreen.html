@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>クイズ画面</title>
 </head>
-<body>
+<body align="CENTER">
 <!-- 問題表示フォーム -->
 <!--	<div th:each="quiz, iterStat : ${quizzes}">-->
 	<div>
@@ -25,6 +25,8 @@
 <!--※いけたら消す	<input type="hidden" th:field="*{quizId}">-->
 		<input type="hidden" name="userId" th:value="${user.Id}">
 		<input type="hidden" name="quizId" th:value="${quiz.id}">
+		<input type="hidden" name="ox" th:value="${ox}">
+		<input type="hidden" name="userScore" th:value="${userScore}">
 		<label for="userAnswer">あなたの解答:</label>
 		<input type="text" th:field="*{quizAnswer}">
 		<input type="submit" value="回答する">

@@ -25,6 +25,6 @@ public interface QuizService {
 	 */
 	
 	/** 登録されているクイズをカウントする */
-	Long getCountQuestion();
+	int getCountQuestion();
 	
 }

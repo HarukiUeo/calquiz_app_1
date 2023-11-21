@@ -40,9 +40,10 @@ public class ImplQuizService implements QuizService {
 	 */
 	
 	@Override
-	public Long getCountQuestion() {
-		
-		return repository.count();
+	public int getCountQuestion() {
+		// int以上の問題数は追加しない＆longは使いづらいため
+		int quizTotal = (int) repository.count();
+		return quizTotal;
 	}
 	
 

@@ -31,7 +31,7 @@
 </style>
 <body>
     <h1 class="title">キャルクイズ</h1>
-
+<div align="CENTER">
     <!-- 名前入力フォーム -->
     <form class="EnterName" th:action="@{/confirm}" method="post" th:object="${userForm}">
         <ul th:if="${#fields.hasErrors('*')}">
@@ -66,7 +66,7 @@
             </form>
         </div>
     </div>
-
+</div>
     <script>
         function toggleLoginForm() {
             var loginForm = document.getElementById("loginForm");

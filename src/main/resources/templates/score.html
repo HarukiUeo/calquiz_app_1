@@ -11,9 +11,10 @@
 	<div th:align="CENTER">
 		<h2>Player Information</h2>
 <!--		<p th:text="${newUserMessage}">-->
-			[[${newUser.name}]]さんは[[${newUser.score}]]点でした。<br>
+			[[${newUser.name}]]さんは[[${userScore}]]点でした。<br>
+			
 			全体ランキングの[[${newUser.rank}]]位です。
-		</p>
+<!--		</p>-->
 	</div>
 		
 	<div th:unless="${newUser.rank}==1" th:align="CENTER">

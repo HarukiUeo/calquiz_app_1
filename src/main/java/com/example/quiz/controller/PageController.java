@@ -1,5 +1,8 @@
 package com.example.quiz.controller;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +19,7 @@ import com.example.quiz.form.UserForm;
 import com.example.quiz.form.UserLogForm;
 import com.example.quiz.form.UserNewLogForm;
 import com.example.quiz.repository.UserRepository;
+import com.example.quiz.service.ImplQuizService;
 import com.example.quiz.service.ImplUserService;
 
 /**
@@ -29,6 +33,9 @@ public class PageController {
 	
 	@Autowired
 	private ImplUserService userService;
+	
+	@Autowired
+	private ImplQuizService quizService;
 	
 	@ModelAttribute
 	public UserForm setUpForm() {
@@ -91,6 +98,17 @@ public class PageController {
 		User user = userService.selectOneUserById(userId);
 		user.setScore(0);
 		repository.save(user);
+		
+		//スコア管理(正誤用配列・スコア)は最後にまとめてデータベースに保存するためhtml間でやり取りをする
+//		String[] ox = new String[quizService.getCountQuestion()];
+		List<String> ox = new LinkedList<>();
+		for(int i=0;i<quizService.getCountQuestion()+1;i++) {
+			ox.add("false");
+		}
+		String userScore = "0";
+		redirectAttributes.addAttribute("ox", ox);
+		redirectAttributes.addAttribute("userScore", userScore);
+		
 		return "redirect:/show";
 	}
 	
