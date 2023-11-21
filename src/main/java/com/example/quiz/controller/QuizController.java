@@ -1,5 +1,6 @@
 package com.example.quiz.controller;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,58 +12,58 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.quiz.entity.Quiz;
-import com.example.quiz.entity.User;
+import com.example.quiz.entity.QuizEntity;
+import com.example.quiz.entity.UserEntity;
 import com.example.quiz.form.QuizForm;
-import com.example.quiz.service.ImplQuizService;
-import com.example.quiz.service.ImplUserService;
+import com.example.quiz.repository.UserTimeRepository;
+import com.example.quiz.service.QuizServiceImpl;
+import com.example.quiz.service.UserServiceImpl;
+import com.example.quiz.service.UserTimeService;
 
 
 /**
-* Javadoc用コメントのテストプログラム
-* @author 宮崎・中村
-* @Date 2023_11_16
-* @version 1.0.2
-*/
+ * Javadoc用コメントのテストプログラム
+ * @author 宮崎・中村
+ * @Date 2023_11_16
+ * @version 1.0.2
+ */
 
 @Controller
 public class QuizController {
-	
-//	boolean[]ox = new boolean[10];
-	
-//	private Integer quizNum=1;
-//	
-//	private Integer score=0;
+
 
 	@Autowired
-	ImplQuizService quizService;
-	
+	QuizServiceImpl quizService;
+
 	@Autowired
-	ImplUserService  userService;
-	
-//	@Autowired
-//	private UserRepository repository;
-//	
-	  /*
-	   * QuizIdsetメソッド
-	   * formにquizNumをセットする
-	   * @param quizNum 整数値
-	   * @return form
-	   */
-	
+	UserServiceImpl  userService;
+
+	@Autowired
+	UserTimeService userTimeService;
+
+	@Autowired
+	UserTimeRepository userTimeRepository;
+
+	/*
+	 * QuizIdsetメソッド
+	 * formにquizNumをセットする
+	 * @param quizNum 整数値
+	 * @return form
+	 */
+
 	@ModelAttribute
 	public QuizForm setUpForm() {
 		QuizForm form = new QuizForm();
 		return form;
 	}
-	
+
 	/*
-	   * playScreen.htmlメソッド
-	   * serviceにセットする
-	   * @param quizNum 整数値
-	   * @return form
-	   */
-	
+	 * playScreen.htmlメソッド
+	 * serviceにセットする
+	 * @param quizNum 整数値
+	 * @return form
+	 */
+
 	@GetMapping("show")
 	public String showPlayScreen(
 			@RequestParam Integer userId,
@@ -70,67 +71,97 @@ public class QuizController {
 			@RequestParam List<String> ox,
 			@RequestParam String userScore,
 			Model model) {
-		Quiz quiz = quizService.selectOneQuizById(quizNum);
-		User user = userService.selectOneUserById(userId);
+		QuizEntity quiz = quizService.selectOneQuizById(quizNum);
+		UserEntity user = userService.selectOneUserById(userId);
 		model.addAttribute("quiz",quiz);
 		model.addAttribute("user",user);
 		model.addAttribute("ox",ox);
 		model.addAttribute("userScore",userScore);
+
+		/**
+		 * ゲスト以外のプレイヤーがゲームをプレイするとスタートした時間が保存される
+		 * @author HarukiUeo
+		 */
+		if(!user.getId().equals(1)) {
+
+			userTimeService.saveEntityWithStartTime(userId);
+
+		}
+
+
 		return "playScreen";
 	}
-	
+
 	//解答チェック機能
 	@PostMapping("/submitAnswer")
-    public String submitAnswer(
-    		@RequestParam("userId") String uId,
-    		@RequestParam("quizId") String qId,
-    		@RequestParam("ox") List<String> ox,
-    		@RequestParam("userScore") String uScore,
-    		QuizForm quizForm,
-    		Model model,
-    		RedirectAttributes redirectAttributes) {
+	public String submitAnswer(
+			@RequestParam("userId") String uId,
+			@RequestParam("quizId") String qId,
+			@RequestParam("ox") List<String> ox,
+			@RequestParam("userScore") String uScore,
+			QuizForm quizForm,
+			Model model,
+			RedirectAttributes redirectAttributes) {
 		Integer quizId = Integer.parseInt(qId);
 		Integer userId = Integer.parseInt(uId);
 		int userScore = Integer.parseInt(uScore);
 		redirectAttributes.addAttribute("userId", userId);
-		Quiz quiz = quizService.selectOneQuizById(quizId);
-		
+		QuizEntity quiz = quizService.selectOneQuizById(quizId);
+		UserEntity user = userService.selectOneUserById(userId);
+
+
 		if (quizForm.getQuizAnswer().equals(quiz.getAnswer())) {
-//		    redirectAttributes.addFlashAttribute("resultMessage","正解です！");
+			//		    redirectAttributes.addFlashAttribute("resultMessage","正解です！");
 
 			// result画面用の正誤配列にtrueを入れる
 			ox.set(quizId,"true");
-			
-//			ox[quizId-1] = "true";
-			
+
+			//			ox[quizId-1] = "true";
+
 			// 正解すると以下の点数を加算
 			int score = 70;
 			userScore += score;
-		    
-		    Integer quizNum = quizId;
-		    quizNum++;
-		    
-		    if(quizNum > quizService.getCountQuestion()) {
-		    	User user = userService.selectOneUserById(userId);
-		    	model.addAttribute(user);
-		    	ox.remove(0);
-		    	model.addAttribute("ox",ox);
-		    	model.addAttribute("userScore",userScore);
-		    	return "quizResult"; 
-		    }
-		    redirectAttributes.addAttribute("quizNum", quizNum);
-		    redirectAttributes.addAttribute("ox", ox);
-		    redirectAttributes.addAttribute("userScore", userScore);
-		    return "redirect:/show";
+
+			/**
+			 * タイムスコア機能の実装・追加
+			 * @author HarukiUeo
+			 */
+			if(!user.getId().equals(1)){
+				Instant endTime=Instant.now();
+				Instant startTime=userTimeService.getStartTimeByUserId(userId);
+				Long timeScore=300-userTimeService.getElapsedTimeInSeconds(startTime, endTime);
+				if(timeScore>=1) {
+					System.out.println(userScore);
+					System.out.println(timeScore);
+					userScore +=Math.toIntExact(timeScore); 
+					System.out.println(userScore);
+				}
+			}
+
+			Integer quizNum = quizId;
+			quizNum++;
+
+			if(quizNum > quizService.getCountQuestion()) {
+				//		    	User user = userService.selectOneUserById(userId); submitAnswerのインスタンスに変えました
+				model.addAttribute(user);
+				ox.remove(0);
+				model.addAttribute("ox",ox);
+				model.addAttribute("userScore",userScore);
+				return "quizResult"; 
+			}
+			redirectAttributes.addAttribute("quizNum", quizNum);
+			redirectAttributes.addAttribute("ox", ox);
+			redirectAttributes.addAttribute("userScore", userScore);
+			return "redirect:/show";
 		} else {
-		    redirectAttributes.addFlashAttribute("resultMessage", "不正解です・・・");
-		    redirectAttributes.addAttribute("quizNum", quizId);
-		    redirectAttributes.addAttribute("ox", ox);
-		    redirectAttributes.addAttribute("userScore", userScore);
-		    return "redirect:/show";
+			redirectAttributes.addFlashAttribute("resultMessage", "不正解です・・・");
+			redirectAttributes.addAttribute("quizNum", quizId);
+			redirectAttributes.addAttribute("ox", ox);
+			redirectAttributes.addAttribute("userScore", userScore);
+			return "redirect:/show";
 		}
 	}
-	
+
 	//問題ごとにヒントを表示させる機能
 	/**
 	 * @Author Kohei Nakamura
@@ -142,25 +173,18 @@ public class QuizController {
 	 */
 	@PostMapping("/showHint")
 	public String showHint(QuizForm quizForm, Model model,RedirectAttributes redirectAttributes){
-		Quiz hint = quizService.selectOneQuizById(quizForm.getQuizId());
+		QuizEntity hint = quizService.selectOneQuizById(quizForm.getQuizId());
 		redirectAttributes.addFlashAttribute("hint",hint.getHint());
 		model.addAttribute("quizId", quizForm.getQuizId());
 
 		return "redirect:/show";
 	}
-	
+
 	//TOPページへ遷移させる
 	@PostMapping("/returnTopPage")
 	public String returnTopPage() {
 		//userのscoreを全クリアする処理
 		return "redirect:showForm";//小林さん担当ページ
 	}
-	
-	
-	// ↓これ要る？？
-	//スコア・ランキング表示画面へ遷移させる
-	@PostMapping("/Result")
-	public  String showResult() {
-		return "score";//松井さん担当ページ
-	}
+
 }

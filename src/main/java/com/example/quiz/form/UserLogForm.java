@@ -10,9 +10,9 @@ import lombok.Data;
  */
 @Data
 public class UserLogForm {
-    @NotBlank(message = "名前が未入力です")
-    private String name;
-	
-    @NotBlank(message = "パスワードが未入力です")
-    private String password;
+	@NotBlank(message = "名前が未入力です")
+	private String name;
+
+	@NotBlank(message = "パスワードが未入力です")
+	private String password;
 }

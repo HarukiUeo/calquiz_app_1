@@ -3,7 +3,7 @@ package com.example.quiz.component;
 
 import org.springframework.stereotype.Component;
 
-import com.example.quiz.entity.User;
+import com.example.quiz.entity.UserEntity;
 import com.example.quiz.repository.UserRepository;
 
 import jakarta.annotation.PostConstruct;
@@ -26,11 +26,11 @@ public class UserDataInitialization {
 	
 	 private void createAndSaveUserIfNotExists() {
 	        // 既存のデータを探す
-	        User existingName = userRepository.findByName("ゲスト");
+	        UserEntity existingName = userRepository.findByName("ゲスト");
 
 	        if (existingName == null) {
 	            // 既存のデータがない場合に新しいデータを作成して保存
-	            User user = new User();
+	            UserEntity user = new UserEntity();
 	            user.setId(2);
 	            user.setName("ゲスト");
 	            user.setPassword("gest");

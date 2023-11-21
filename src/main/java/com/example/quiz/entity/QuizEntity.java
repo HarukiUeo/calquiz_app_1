@@ -21,25 +21,25 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name="quizinfo")
-public class Quiz {
-	
+public class QuizEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
 	@Column(name = "name")
 	private String quizName;
-	
+
 	@Column(name="answer")
 	private String answer;
-	
+
 	/** quizinfoテーブルにhint列(String型)を追加
 	 * @author 中村
 	 * @Date 2023_11_16
 	 */
-	
+
 	@Column(name="hint")
 	private String hint;
-	
+
 }
 
