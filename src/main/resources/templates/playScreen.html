@@ -12,7 +12,10 @@
 		<p th:text="${'問題' + quiz.id}"></p>
 	<!-- ヒント表示フォーム -->
 		<form th:action="@{/showHint}" method="post">
-    		<input type="hidden" name="quizId" th:value="${quizForm.quizId}" />
+			<input type="hidden" name="userId" th:value="${user.Id}">
+    		<input type="hidden" name="quizId" th:value="${quiz.id}" />
+    		<input type="hidden" name="ox" th:value="${ox}">
+			<input type="hidden" name="userScore" th:value="${userScore}">
     		<p th:if="${hint}"th:text="${hint}"></p>
     		<button type="submit" th:unless="${hint}">ヒントを見る</button>
 		</form>

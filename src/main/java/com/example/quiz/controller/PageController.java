@@ -59,7 +59,7 @@ public class PageController {
 		return new UserNewLogForm();
 	}
 	
-	@GetMapping("home")
+	@GetMapping("showHome")
 	public String showHome(Model model) {
 		
 		UserEntity user = userService.selectOneUserById(GUEST_ID);

@@ -172,11 +172,20 @@ public class QuizController {
 	 * @return 引数で受け取ったクイズフォームからIDを取得してヒントを返します
 	 */
 	@PostMapping("/showHint")
-	public String showHint(QuizForm quizForm, Model model,RedirectAttributes redirectAttributes){
-		QuizEntity hint = quizService.selectOneQuizById(quizForm.getQuizId());
+	public String showHint(@RequestParam("userId") String uId,
+			@RequestParam("quizId") String qId, 
+			@RequestParam("ox") List<String> ox,
+			@RequestParam("userScore") String uScore,
+			Model model,RedirectAttributes redirectAttributes){
+		Integer quizId = Integer.parseInt(qId);
+		Integer userId = Integer.parseInt(uId);
+		int userScore = Integer.parseInt(uScore);
+		QuizEntity hint = quizService.selectOneQuizById(quizId);
 		redirectAttributes.addFlashAttribute("hint",hint.getHint());
-		model.addAttribute("quizId", quizForm.getQuizId());
-
+		redirectAttributes.addAttribute("quizNum", quizId);
+		redirectAttributes.addAttribute("userId", userId);
+		redirectAttributes.addAttribute("ox", ox);
+		redirectAttributes.addAttribute("userScore", userScore);
 		return "redirect:/show";
 	}
 
