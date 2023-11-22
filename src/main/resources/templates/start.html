@@ -28,17 +28,25 @@
 </head>
 
 <body>
-	<form th:action = "@{/send}" method="post">
+	<form th:action = "@{/show}" method="post">
 		<input type="hidden" name="userId" th:value="${user.id}">
+	<!--quizIdは１問目から-->
+	<!--<input type="hidden" name="quizId" th:value="1" />-->
+	<!--<input type="hidden" name="ox" th:value="${ox}">-->
+	<!--<input type="hidden" name="userScore" th:value="${userScore}">-->
+
 		<div>
 			<h1 class = "content">[[${user.name}]]さん用意はいいですか？</h1>
 		</div>
+		
 		<div>
 			<p for="name">なんか書く？？</p>
 		</div>
+		
 		<div class = "items">
 			<button type="submit">スタート</button>
 		</div>
+		
 	</form>
 </body>
 </html>

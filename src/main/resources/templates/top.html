@@ -33,12 +33,27 @@
     <h1 class="title">キャルクイズ</h1>
 <div align="CENTER">
     <!-- 名前入力フォーム -->
-    <form class="EnterName" th:action="@{/confirm}" method="post" th:object="${userForm}">
+<!--    <form class="EnterName" th:action="@{/confirm}" method="post" th:object="${userForm}">-->
+<!--        <ul th:if="${#fields.hasErrors('*')}">-->
+<!--            <p th:each="err:${#fields.errors('*')}" th:text="${err}" style="color:red"></p>-->
+<!--        </ul>-->
+        
+    <form class="EnterName" th:action="@{/confirm}" method="post" th:object="${userLogForm}">
         <ul th:if="${#fields.hasErrors('*')}">
             <p th:each="err:${#fields.errors('*')}" th:text="${err}" style="color:red"></p>
         </ul>
-        <p>名前：<input type="text" th:field="*{name}" /><button type="submit">確定</button></p>
+        <input type="hidden" name="userId" th:value="${user.Id}">
+       		 <p><input id="inName" type="text" name="userName" th:value="${user.name}"/></p>
+     		 <p><input id="inPass" type="password" name="userPassword" th:value="${user.password}"/></p>
+		  <button type="submit">play</button></p>
     </form>
+   
+<!--    <form th:action="@{/confirm}" method="post">-->
+		
+		
+<!--		<input type="hidden" name="userId" th:value="${user.Id}">-->
+<!--        <button type="submit">プレイ</button>-->
+<!--    </form>-->
 
     <!-- 新規登録、ログイン、ログアウトフォーム -->
     <div class="new">
@@ -60,8 +75,8 @@
        			 </ul>
             <p th:if="${errorMessage}"style="color:red"th:text="${errorMessage}"></p>
         		 </ul>
-                <p>ユーザー名：<input type="text" th:field="*{name}" /></p>
-                <p>パスワード：<input type="password" th:field="*{password}" /></p>
+                <p>ユーザー名：<input type="text" th:field="*{name}"　autocomplete="${name}" /></p>
+                <p>パスワード：<input type="password" th:field="*{password}"autocomplete="${password}" /></p>
                 <button type="submit">ログイン</button>
             </form>
         </div>
@@ -72,6 +87,12 @@
             var loginForm = document.getElementById("loginForm");
             loginForm.style.display = (loginForm.style.display === 'none') ? 'block' : 'none';
         }
+        var target1 = document.getElementById("inName");
+		var target2 = document.getElementById("inPass");
+
+		// 変数testの要素を入力不可にする
+		target1.disabled = true;
+		target2.disabled = true;
     </script>
 </body>
 </html>

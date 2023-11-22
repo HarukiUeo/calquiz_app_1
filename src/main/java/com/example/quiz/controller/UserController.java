@@ -35,7 +35,8 @@ public class UserController {
 
 
 		// IDが0はゲスト(アカウント持ちユーザーのみデータベースに保存)
-		if(userId!=0) {
+		// ◆アカウントユーザーは前回のスコアと比べて良いほうを残したい
+		if(userId!=PageController.GUEST_ID) {
 			user.setScore(userScore);
 			userService.saveUser(user);
 		}

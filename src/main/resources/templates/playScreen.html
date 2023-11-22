@@ -25,7 +25,6 @@
 	</div>
 <!-- 入力フォーム -->
 	<form th:action="@{/submitAnswer}" method="post" th:object="${quizForm}">
-<!--※いけたら消す	<input type="hidden" th:field="*{quizId}">-->
 		<input type="hidden" name="userId" th:value="${user.Id}">
 		<input type="hidden" name="quizId" th:value="${quiz.id}">
 		<input type="hidden" name="ox" th:value="${ox}">
@@ -39,8 +38,9 @@
 	<p th:text="${resultMessage}"></p>
 	
 <!-- ボタン -->
-	<form th:action="@{/returnTopPage}" method="post">
-		<button type="submit">TOPページへ戻	る</button>
+	<form th:action="@{/showForm}" method="post">
+		<input type="hidden" name="userId" th:value="${user.Id}">
+		<button type="submit">TOPページへ戻る</button>
 	</form>
 </body>
 </html>
