@@ -7,11 +7,12 @@
 		body{
 			text-align: center;
 			font-size: 30px;
-			Background-color: white;
-			color: black;
+			Background-color: rgb(0, 0, 0);
+			color:white;
 		}
 		.content{
 			font-size: 50px;
+			color:white;
 		}
 		.items{
 			margin:250px auto;
@@ -32,9 +33,7 @@
 		<input type="hidden" name="userId" th:value="${user.id}">
 		<div>
 			<h1 class = "content">[[${user.name}]]さん用意はいいですか？</h1>
-		</div>
-		<div>
-			<p for="name">なんか書く？？</p>
+				<img src="/images/burger1.png">
 		</div>
 		<div class = "items">
 			<button type="submit">スタート</button>

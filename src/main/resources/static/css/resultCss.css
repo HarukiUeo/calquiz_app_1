@@ -1,16 +1,11 @@
 @charset "UTF-8";
-/**
-background-image:url("/images/logo1.png"); 消して良い、メモ用
-background-repeat:no-repeat;
-background-attachment:fixed;
-background-position:center;
-**/
+
 html {
   font-size:62.5%;
 }
 body {
 	font-size:1.4rem;
-	background-image:url("/QuizImages/resultScreen.png");
+	background-image:url("/images/resultScreen.png");
 	background-repeat:no-repeat;
 	background-attachment:fixed;
 	background-position:center;
@@ -64,14 +59,14 @@ body {
 
 /* 左上のハートのスタイル */
 .ranking-button::before {
-  background-image: url('neonice.svg');
+  background-image: url('/images/neonice.svg');
   top: 0;
   left: -12px;
 }
 
 /* 右下のハートのスタイル */
 .ranking-button::after {
-  background-image: url('heart-reverse.svg');
+  background-image: url('/images/heart-reverse.svg');
   bottom: -6px;
   right: -14px;
 }
