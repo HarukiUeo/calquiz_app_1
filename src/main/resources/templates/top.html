@@ -34,6 +34,36 @@
     .login-form {
         display: none;
     }
+    
+    .button-set{
+		display:flex;
+		justify-content: center;
+	}
+	button{
+		position: relative;
+    	color: cyan;
+    	letter-spacing: 5px;
+		border: 5px solid cyan;
+		padding: 0px;
+		font-size: 20px;
+		font-family: Arial, Helvetica, sans-serif;
+		font-weight: bold;
+		transition: 1s;
+		border-radius:100px;
+		background:black;
+	}
+	button:hover {
+		box-shadow: 0 5px 50px 0 cyan inset,0 5px 50px 0 cyan,
+		0 5px 50px 0 cyan inset,0 5px 50px 0 cyan;
+		text-shadow: 0 0 5px cyan;
+	}
+	p{
+		text-shadow: 0 0 1px #8080ed, 0 0 3px #8080ed, 0px 0px 6px #8080ed, 0 0 10px #8080ed, 0 0 30px #8080ed, 0 0 50px #8080ed;
+	    color: #fff;
+	    margin-bottom: 1rem;
+	    font-size: 20px;
+	    font-weight: bold;
+	}
 </style>
 <body>
     <img src="/images/logo1.png" class="mainlogo">
@@ -47,7 +77,8 @@
     </form>
 
     <!-- 新規登録、ログイン、ログアウトフォーム -->
-    <div class="new">
+<div class="new">
+    <div class="button-set">
         <form th:action="@{/registerPage}" method="post">
             <button type="submit">新規登録</button>
         </form>
@@ -57,7 +88,7 @@
         <form th:action="@{/logout}" method="post">
             <button type="submit">ログアウト</button>
         </form>
-
+	</div>
         <!-- ログインフォーム -->
         <div class="login-form" id="loginForm">
             <form th:action="@{/login}" method="post" th:object="${userLogForm}">

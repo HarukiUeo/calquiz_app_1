@@ -11,9 +11,12 @@
 body {
 	font-size:1.4rem;
 	background-image:url("/images/resultScreen.png");
+	background-size:contain;
 	background-repeat:no-repeat;
 	background-attachment:fixed;
 	background-position:center;
+	background-color:rgb(40, 28, 70);
+	
 }
 *, *::before, *::after {
   box-sizing:border-box;
@@ -23,11 +26,13 @@ body {
   display:block;
   clear:both;
 }
-/***********************/
-.ox{
-	text-shadow: 2px 2px 3px #666666,-2px -2px 3px #666666;
- 	font-size: 3rem;
-  	color: #fff;
+
+.result-table{
+	text-shadow: 0 0 1px #8080ed, 0 0 3px #8080ed, 0px 0px 6px #8080ed, 0 0 10px #8080ed, 0 0 30px #8080ed, 0 0 50px #8080ed;
+	color: #fff;
+	margin-bottom: 1rem;
+	font-size: 20px;
+	font-weight: bold;
 }
 /***********　ランキングボタン　************/ 
 .ranking-button{
@@ -91,7 +96,7 @@ body {
 }
 
 /* ボタンホバー時の右下のハートのスタイル */
-.heart-button:hover::after {
+.ranking-button:hover::after {
   animation: heart 1.5s 0.2s infinite ease-out;
 }
 
@@ -138,10 +143,8 @@ body {
 
 </head>
 <body>
-	<br>
-	<h1 class="ox" th:align = "CENTER">..*:' 正誤一覧 ':*..</h1>
-	
-	<table border="1" th:align="CENTER">
+	<br><br><br><br><br>
+	<table border="1" th:align="CENTER" class="result-table">
 			<tr>
 				<th>クイズNo.</th>
 				<th>　正誤　 </th>

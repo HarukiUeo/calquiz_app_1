@@ -3,17 +3,59 @@
 <head>
 <meta charset="UTF-8">
 <title>score</title>
+<style>
+	
+body{
+	background-image:url("/images/scoreScreen.png");
+	background-size:contain;
+	background-repeat:no-repeat;
+	background-attachment:fixed;
+	background-position:center;
+	background-color:rgb(0, 0, 0);
+	
+	text-shadow: 0 0 1px #8080ed, 0 0 3px #8080ed, 0px 0px 6px #8080ed, 0 0 10px #8080ed, 0 0 30px #8080ed, 0 0 50px #8080ed;
+	color: #fff;
+	margin-bottom: 1rem;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+button{
+    position: relative;
+    color: cyan;
+    letter-spacing: 5px;
+ 	border: 5px solid cyan;
+	padding: 15px;
+	font-size: 14px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	transition: 1s;
+	border-radius:100px;
+	background:black;
+}
+
+button:hover{
+	 box-shadow: 0 5px 50px 0 cyan inset,0 5px 50px 0 cyan,
+	 0 5px 50px 0 cyan inset,0 5px 50px 0 cyan;
+	 text-shadow: 0 0 5px cyan;
+}
+
+.form-buttons{
+	display :flex;
+	justify-content: center;
+}
+
+</style>
 </head>
 <body>
-		
-	<h1 th:align="CENTER">～結果発表～</h1>
-	
+	<div class="result-title">	
+		<h3 th:align="CENTER">～結果発表～</h3>
+	</div>
 	<div th:align="CENTER">
-		<h2>Player Information</h2>
 <!--		<p th:text="${newUserMessage}">-->
-			[[${newUser.name}]]さんは[[${userScore}]]点でした。<br>
+				[[${newUser.name}]]さんは[[${userScore}]]点でした。<br>
 			
-			全体ランキングの[[${newUser.rank}]]位です。
+				全体ランキングの[[${newUser.rank}]]位です。
 <!--		</p>-->
 	</div>
 		
@@ -25,9 +67,7 @@
 		</p>
 	</div>
 	
-	<br>
-	
-	<h2 th:align="CENTER">--- 全体ランキング ---</h2>
+	<h4 th:align="CENTER">--- 全体ランキング ---</h4>
 	<table border="1" th:align="CENTER">
 		<tr>
 			<th>Rank</th>
@@ -45,7 +85,7 @@
 	</table>
 		
 	<br>
-	<div th:align="CENTER">
+<div class="form-buttons">
 <!--	アカウント持ちユーザはスタート画面に戻るようにしたい-->
 	<form th:action="@{/start}" method="post">
 		<input type="hidden" name="userId" th:value="${newUser.id}">
@@ -55,7 +95,7 @@
 	<form th:action="@{/returnTopPage}" method="post">
 		<button type="submit">TOPページへ戻る</button>
 	</form>
-	</div>
+</div>
 	
 </body>
 </html>
