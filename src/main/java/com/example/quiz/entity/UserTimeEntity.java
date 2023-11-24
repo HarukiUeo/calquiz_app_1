@@ -30,7 +30,7 @@ public class UserTimeEntity {
 
 	@ManyToOne
 	@JoinColumn(name="userinfo_id")
-	private User user;
+	private UserEntity user;
 
 	@Column(name="startTime")
 	private Instant startTime;

@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.quiz.entity.User;
+import com.example.quiz.entity.UserEntity;
 import com.example.quiz.repository.UserRepository;
 
 /**
@@ -15,42 +15,35 @@ import com.example.quiz.repository.UserRepository;
  */
 
 @Service
-public class ImplUserService implements UserService{
-	
+public class UserServiceImpl implements UserService{
+
 	@Autowired
 	UserRepository repository;
 
 	@Override
-	public List<User> selectAllUsers() {
+	public List<UserEntity> selectAllUsers() {
 		return repository.findAll();
 	}
 
-//	@Override
-//	public List<User> selectAllUsersExceptGuest() {
-//		List<User> list = repository.selectAllAsc();
-//		list.remove(0);
-//		return list;
-//	}
-	
 	@Override
-	public User selectOneUserById(Integer id) {
+	public UserEntity selectOneUserById(Integer id) {
 		// nullかどうかチェックした方がいい
-		Optional<User> userOpt = repository.findById(id);
+		Optional<UserEntity> userOpt = repository.findById(id);
 		return userOpt.get();
 	}
-	
+
 	@Override
-	public List<User> findTop10ByOrderByScoreDesc() {
+	public List<UserEntity> findTop10ByOrderByScoreDesc() {
 		return repository.findTop10ByOrderByScoreDesc();
 	}
 
 	@Override
-	public User findFirstByOrderByIdDesc() {
+	public UserEntity findFirstByOrderByIdDesc() {
 		return repository.findFirstByOrderByIdDesc();
 	}
 
 	@Override
-	public void saveUser(User user) {
+	public void saveUser(UserEntity user) {
 		repository.save(user);
 	}
 

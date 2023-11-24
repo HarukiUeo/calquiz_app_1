@@ -2,7 +2,7 @@ package com.example.quiz.component;
 
 import org.springframework.stereotype.Component;
 
-import com.example.quiz.entity.Quiz;
+import com.example.quiz.entity.QuizEntity;
 import com.example.quiz.repository.QuizRepository;
 
 import jakarta.annotation.PostConstruct;
@@ -40,11 +40,11 @@ public class QuizDataInitialization {
      */
     private void createAndSaveQuizIfNotExists(String quizName, String answer,String hint) {
         // 既存のデータを探す
-        Quiz existingName = quizRepository.findByQuizName(quizName);
+        QuizEntity existingName = quizRepository.findByQuizName(quizName);
 
         if (existingName == null) {
             // 既存のデータがない場合に新しいデータを作成して保存
-            Quiz quiz = new Quiz();
+            QuizEntity quiz = new QuizEntity();
             quiz.setQuizName(quizName);
             quiz.setAnswer(answer);
             quiz.setHint(hint);

@@ -1,8 +1,5 @@
 package com.example.quiz.controller;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,15 +9,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.quiz.entity.User;
+import com.example.quiz.entity.UserEntity;
+import com.example.quiz.entity.UserTimeEntity;
 import com.example.quiz.form.UserForm;
 import com.example.quiz.form.UserLogForm;
 import com.example.quiz.form.UserNewLogForm;
 import com.example.quiz.repository.UserRepository;
-import com.example.quiz.service.ImplQuizService;
-import com.example.quiz.service.ImplUserService;
+import com.example.quiz.repository.UserTimeRepository;
+import com.example.quiz.service.UserServiceImpl;
 
 /**
  * @author Anzu Kobayasi
@@ -29,57 +26,95 @@ import com.example.quiz.service.ImplUserService;
 @Controller
 public class PageController {
 	@Autowired
-	private UserRepository repository;
+	private UserRepository userRepository;
+
+	@Autowired
+	private UserServiceImpl userService;
+
+//	@Autowired
+//	private QuizServiceImpl quizService;
 	
 	@Autowired
-	private ImplUserService userService;
+	private UserTimeRepository userTimeRepository;
 	
-	@Autowired
-	private ImplQuizService quizService;
+	public static final int GUEST_ID=1;
 	
+	private UserEntity player; 
+
 	@ModelAttribute
 	public UserForm setUpForm() {
 		return new UserForm();
 	}
-	
+
 	@ModelAttribute
 	public UserLogForm setUpLogForm() {
-		return new UserLogForm();
+		UserLogForm userLogForm = new UserLogForm();
+		userLogForm.setName("ゲスト");
+		userLogForm.setPassword("gest");
+		return userLogForm;
 	}
-	
+
 	@ModelAttribute
 	public UserNewLogForm setUpNewLogForm() {
 		return new UserNewLogForm();
 	}
-
-	@GetMapping("showForm")
-	public String showForm() {
-//		User user = new User();
-//		user=repository.findByLoggedinAndId(true,1);
-//			user.setScore(0);
-//			user.setRank(0);
+	
+	@GetMapping("showHome")
+	public String showHome(Model model) {
+		UserEntity user = userService.selectOneUserById(GUEST_ID);
 		
+		this.player = user;
+		
+		model.addAttribute("user",user);
+		return "home";
+	}
+
+	@PostMapping("showForm")
+	public String showForm(UserLogForm userLogForm, @RequestParam("userId") String uId, Model model) {
+		Integer userId = Integer.parseInt(uId);
+		UserEntity user = userService.selectOneUserById(userId);
+		
+		userLogForm.setName(user.getName());
+		userLogForm.setPassword(user.getPassword());
+		
+		model.addAttribute("user",user);
 		return "top";
 	}
 	
+
+	
+	// ゲストモード用のコントローラー
 	@PostMapping("confirm")
-	public String showConfirm(@Validated UserForm form,
-			BindingResult bindingResult,Model model) {
-		if(bindingResult.hasErrors()) {
-			return "top";
-		}
-		User user = new User();
-		user.setName(form.getName());
-		user.setScore(0);
-		user.setRank(0);
-		user.setLoggedin(false);
+	public String showConfirm(
+			UserLogForm userLogForm,
+			@RequestParam("userId") String uId, Model model) {
+		Integer userId = Integer.parseInt(uId);
+		UserEntity user = userService.selectOneUserById(userId);
 		
-		repository.save(user);
-		//Modelに格納する
+		userLogForm.setName(user.getName());
+		userLogForm.setPassword(user.getPassword());
+		
 		model.addAttribute("user", user);
+		
+		
+		// ユーザー名とパスワードの組み合わせが存在するか確認
+				UserEntity userV = userRepository.findByNameAndPassword(userLogForm.getName(), userLogForm.getPassword());
+				if (userV == null) {
+					model.addAttribute("errorMessage", "ユーザー名もしくはパスワードが違います");
+					model.addAttribute("user", this.player);
+					return "top";
+				}
+
+				// ログイン状態になり、スタート画面に進む
+				user.setLoggedin(true);
+				userRepository.save(userV);
+				model.addAttribute("user", userV);
+		
 		return "start";
 	}
+
 	
+	// GETメソッド制限のため修正
 	/**
 	 * "/send" への POST リクエストを処理し、"/show" にリダイレクトします。
 	 *
@@ -88,120 +123,121 @@ public class PageController {
 	 */
 	//redirectじゃないとplayScreen.htmlのquiz.idにnull値が入るようになっていたので修正しています。
 	//恐らくQuizControllerが上手く処理されない為。
-	@PostMapping("send")
-	public String showQuizView(@RequestParam("userId") String id, Model model,
-			RedirectAttributes redirectAttributes) {
-		Integer userId = Integer.parseInt(id);
-		redirectAttributes.addAttribute("userId", userId);
-		//１問目から表示されるように
-		redirectAttributes.addAttribute("quizNum", 1);
-		User user = userService.selectOneUserById(userId);
-		user.setScore(0);
-		repository.save(user);
-		
-		//スコア管理(正誤用配列・スコア)は最後にまとめてデータベースに保存するためhtml間でやり取りをする
-//		String[] ox = new String[quizService.getCountQuestion()];
-		List<String> ox = new LinkedList<>();
-		for(int i=0;i<quizService.getCountQuestion()+1;i++) {
-			ox.add("false");
-		}
-		String userScore = "0";
-		redirectAttributes.addAttribute("ox", ox);
-		redirectAttributes.addAttribute("userScore", userScore);
-		
-		return "redirect:/show";
-	}
-	
-	
+//	@PostMapping("send")
+//	public String showQuizView(@RequestParam("userId") String id, Model model,
+//			RedirectAttributes redirectAttributes) {
+//		Integer userId = Integer.parseInt(id);
+////		redirectAttributes.addAttribute("userId", userId);
+//		//１問目から表示されるように
+////		redirectAttributes.addAttribute("quizNum", 1);
+////		UserEntity user = userService.selectOneUserById(userId);
+////		user.setScore(0);
+////		userRepository.save(user);
+//
+//
+//		return "redirect:/show";
+//	}
+
+
 	/**
 	 * ユーザー新規登録機能、ログイン機能を実装
 	 * @author Mayumi Hamada
 	 */
-	 // 新規登録処理
+	// 新規登録処理
 	@PostMapping("registerPage")
 	public String registerShow() {
 		return "registerPage";
 	}
-	
-    @PostMapping("register")
-    public String registerUser(@Validated UserNewLogForm form,
-                               BindingResult bindingResult,
-                               Model model) {
-        if (bindingResult.hasErrors()) {
-            return "registerPage";
-        }
-        
-        /**
-         * ユーザー名がデータベースに存在しないか確認
-         * @author Haruki Ueo
-         */
-        // データベースに同じユーザー名が存在できないようにしました。
-        if (repository.findByName(form.getName()) != null) {
-        	model.addAttribute("errorMessage", "既に存在するユーザー名です");
-        	return "registerPage";
-        }
-        
-        // パスワードと確認用パスワードの一致を確認
-        if (!form.getPassword().equals(form.getConfirmPassword())) {
-            model.addAttribute("errorMessage", "パスワードが一致しません");
-            return "registerPage";
-        }
-        
-        
 
-        // 新しいユーザーを登録
-        User user=new User();
-        user.setId(user.getId());
-        user.setLoggedin(true);
-        user.setName(form.getName());
-        user.setPassword(form.getPassword());
-        user.setRank(0);
-        user.setScore(0);
-        repository.save(user);
+	@PostMapping("register")
+	public String registerUser(@Validated UserNewLogForm form,
+			BindingResult bindingResult,
+			Model model) {
+		if (bindingResult.hasErrors()) {
+			return "registerPage";
+		}
 
-        // ログイン状態になり、名前入力画面に戻る
-        model.addAttribute("user", user);
-        return "start";
-    }
+		/**
+		 * ユーザー名がデータベースに存在しないか確認
+		 * @author Haruki Ueo
+		 */
+		// データベースに同じユーザー名が存在できないようにしました。
+		if (userRepository.findByName(form.getName()) != null) {
+			model.addAttribute("errorMessage", "既に存在するユーザー名です");
+			return "registerPage";
+		}
 
-    // ログイン処理
-    @PostMapping("login")
-    public String loginUser(@Validated UserLogForm form,
-                            BindingResult bindingResult,
-                            Model model) {
-        if (bindingResult.hasErrors()) {
-            return "top";
-        }
+		// パスワードと確認用パスワードの一致を確認
+		if (!form.getPassword().equals(form.getConfirmPassword())) {
+			model.addAttribute("errorMessage", "パスワードが一致しません");
+			return "registerPage";
+		}
 
-        // ユーザー名とパスワードの組み合わせが存在するか確認
-        User user = repository.findByNameAndPassword(form.getName(), form.getPassword());
-        if (user == null) {
-            model.addAttribute("errorMessage", "ユーザー名もしくはパスワードが違います");
-            return "top";
-        }
 
-        // ログイン状態になり、名前入力画面に戻る
-        user.setLoggedin(true);
-        repository.save(user);
-        model.addAttribute("user", user);
-        return "start";
-    }
-    
-    /**
+
+		// 新しいユーザーを登録
+		UserEntity user=new UserEntity();
+		user.setId(user.getId());
+		user.setLoggedin(true);
+		user.setName(form.getName());
+		user.setPassword(form.getPassword());
+		user.setRank(0);
+		user.setScore(0);
+		userRepository.save(user);
+
+    	UserTimeEntity userTime = new UserTimeEntity();
+		userTime.setUser(user);
+		userTimeRepository.save(userTime);
+		
+
+		// ログイン状態になり、スタート画面に進む
+		model.addAttribute("user", user);
+		return "start";
+	}
+
+	// ログイン処理
+	@PostMapping("login")
+	public String loginUser(@Validated UserLogForm userLogForm,
+			BindingResult bindingResult,
+			Model model) {
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("user", this.player);
+			return "top";
+		}
+
+		// ユーザー名とパスワードの組み合わせが存在するか確認
+		UserEntity user = userRepository.findByNameAndPassword(userLogForm.getName(), userLogForm.getPassword());
+		if (user == null) {
+			model.addAttribute("errorMessage", "ユーザー名もしくはパスワードが違います");
+			model.addAttribute("user", this.player);
+			return "top";
+		}
+
+		// ログイン状態になり、スタート画面に進む
+		user.setLoggedin(true);
+		userRepository.save(user);
+		model.addAttribute("user", user);
+		return "start";
+	}
+
+	/**
 	 * ログアウト機能を実装しました
 	 * @author 小林杏
 	 */
-    // ログアウト処理
-    @PostMapping("logout")
-    public String logoutUser(Model model) {
-        User user = repository.findByLoggedin(true);
-        if (user != null) {
-            // ログイン状態を解除
-            user.setLoggedin(false);
-            repository.save(user);
-        }
-        // 最初の名前入力画面に戻る
-        return "top";
-    }
+	// ログアウト処理
+	@PostMapping("logout")
+	public String logoutUser(@RequestParam("userId") String uId,Model model) {
+		Integer userId = Integer.parseInt(uId);
+		UserEntity user = userService.selectOneUserById(userId);
+		if (user != null) {
+			// ログイン状態を解除
+			user.setLoggedin(false);
+			userRepository.save(user);
+		}
+		
+		this.player = userService.selectOneUserById(GUEST_ID);
+		model.addAttribute("user", player);
+		// 最初の名前入力画面に戻る
+		return "top";
+	}
 }
-
