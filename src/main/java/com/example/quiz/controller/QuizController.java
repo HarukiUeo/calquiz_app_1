@@ -9,10 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.quiz.component.ControllerParameter;
 import com.example.quiz.entity.QuizEntity;
-import com.example.quiz.entity.UserEntity;
 import com.example.quiz.form.QuizForm;
 import com.example.quiz.repository.UserTimeRepository;
 import com.example.quiz.service.QuizServiceImpl;
@@ -43,8 +42,16 @@ public class QuizController {
 	@Autowired
 	UserTimeRepository userTimeRepository;
 	
+	@Autowired
+	ControllerParameter ctrParam;
+	
 	/** クイズの１問目 */
 	public static final Integer firstQuiz = 1;
+	
+	/** 1問あたりの基礎配点 */
+	public static final int BASE_SCORE = 70;
+	
+	private int quizId;
 	
 	/*
 	 * QuizIdsetメソッド
@@ -76,7 +83,7 @@ public class QuizController {
 	 * @author HarukiUeo
 	 */
 	public void setTimeExceptGuest(Integer userId) {
-		if(!userId.equals(PageController.GUEST_ID)) {
+		if(!userId.equals(ControllerParameter.GUEST_ID)) {
 			userTimeService.saveEntityWithStartTime(userId);
 		}
 	}
@@ -92,30 +99,33 @@ public class QuizController {
 
 	@PostMapping("show")
 	public String showPlayScreen(
-			@RequestParam("userId") String uId,
+//			@RequestParam("userId") String uId,
 //			@RequestParam("quizId") String qId,
 //			@RequestParam("ox") List<String> ox,
 //			@RequestParam("userScore") String uScore,
 			Model model) {
 		
 		//スコア管理(正誤用配列・スコア)は最後にまとめてデータベースに保存するためhtml間でやり取りをする
-		List<String> ox = setUpOxList();
-		model.addAttribute("ox", ox);
+//		List<String> ox = 
+		ctrParam.setOx(setUpOxList());
 		
-		String userScore = "0";
+//		String userScore = "0";
+		ctrParam.setUserScore(0);
 		
 //		Integer quizId = Integer.parseInt(qId);
-		Integer userId = Integer.parseInt(uId);
+//		Integer userId = Integer.parseInt(uId);
 //		int userScore = Integer.parseInt(uScore);
 		QuizEntity quiz = quizService.selectOneQuizById(firstQuiz);
-		UserEntity user = userService.selectOneUserById(userId);
+		this.quizId = firstQuiz;
+//		UserEntity user = userService.selectOneUserById(userId);
 		model.addAttribute("quiz",quiz);
-		model.addAttribute("user",user);
-		model.addAttribute("ox",ox);
-		model.addAttribute("userScore",userScore);
+		model.addAttribute("user",ctrParam.getPlayer());
+//		model.addAttribute("ox",ox);
+		model.addAttribute("ox", ctrParam.getOx());
+		model.addAttribute("userScore",ctrParam.getUserScore());
 		
 		// 1問目のタイマースタート
-		setTimeExceptGuest(userId);
+		setTimeExceptGuest(ctrParam.getPlayer().getId());
 		
 		return "playScreen";
 	}
@@ -123,69 +133,74 @@ public class QuizController {
 	//解答チェック機能
 	@PostMapping("/submitAnswer")
 	public String submitAnswer(
-			@RequestParam("userId") String uId,
-			@RequestParam("quizId") String qId,
-			@RequestParam("ox") List<String> ox,
-			@RequestParam("userScore") String uScore,
+//			@RequestParam("userId") String uId,
+//			@RequestParam("quizId") String qId,
+//			@RequestParam("ox") List<String> ox,
+//			@RequestParam("userScore") String uScore,
+//			@RequestParam("hintCount") String hintCount,
 			QuizForm quizForm,
 			Model model) {
-		Integer quizId = Integer.parseInt(qId);
-		Integer userId = Integer.parseInt(uId);
-		int userScore = Integer.parseInt(uScore);
-		QuizEntity quiz = quizService.selectOneQuizById(quizId);
-		UserEntity user = userService.selectOneUserById(userId);
+//		Integer quizId = Integer.parseInt(qId);
+//		Integer userId = Integer.parseInt(uId);
+//		int userScore = Integer.parseInt(uScore);
+		QuizEntity quiz = quizService.selectOneQuizById(this.quizId);
+//		UserEntity user = userService.selectOneUserById(userId);
 		
 		// 正解・不正解関係なくユーザーをモデルに格納
-		model.addAttribute("user", user);
+		model.addAttribute("user", ctrParam.getPlayer());
 
 
 		if (quizForm.getQuizAnswer().equals(quiz.getAnswer())) {
 
 			// result画面用の正誤配列にtrueを入れる
-			ox.set(quizId,"true");
-
+			ctrParam.getOx().set(this.quizId,"true");
+//			List<String> ox = ctrParam.getOx();
+//			ox.set(this.quizId,"true");
+//			ctrParam.setOx(ox);
+			
+//			int hintC = Integer.parseInt(hintCount);
+			
 			// 正解すると以下の点数を加算
-			int score = 70;
-			userScore += score;
+			ctrParam.setUserScore(ctrParam.getUserScore()+BASE_SCORE);
 
 			/**
 			 * タイムスコア機能の実装・追加
 			 * @author HarukiUeo
 			 */
-			if(!user.getId().equals(PageController.GUEST_ID)){
+			if(!ctrParam.getPlayer().getId().equals(ControllerParameter.GUEST_ID)){
 				Instant endTime=Instant.now();
-				Instant startTime=userTimeService.getStartTimeByUserId(userId);
+				Instant startTime=userTimeService.getStartTimeByUserId(ctrParam.getPlayer().getId());
 				Long timeScore=300-userTimeService.getElapsedTimeInSeconds(startTime, endTime);
 				if(timeScore>=1) {
-					userScore +=Math.toIntExact(timeScore)/10; 
+					ctrParam.setUserScore(ctrParam.getUserScore()+Math.toIntExact(timeScore)/10);
 				}
 			}
 
-			Integer quizNum = quizId;
-			quizNum++;
+			this.quizId += 1;
 			
 			// 最終問題の場合
-			if(quizNum > quizService.getCountQuestion()) {
-				model.addAttribute(user);
-				ox.remove(0);
-				model.addAttribute("ox",ox);
-				model.addAttribute("userScore",userScore);
+			if(this.quizId > quizService.getCountQuestion()) {
+				ctrParam.getOx().remove(0);
+				model.addAttribute("ox",ctrParam.getOx());
+				model.addAttribute("userScore",ctrParam.getUserScore());
 				return "quizResult"; 
 			}
 			
-			QuizEntity nextQuiz = quizService.selectOneQuizById(quizNum);
+			
+			QuizEntity nextQuiz = quizService.selectOneQuizById(this.quizId);
 			model.addAttribute("quiz", nextQuiz);
-			model.addAttribute("ox", ox);
-			model.addAttribute("userScore", userScore);
+			model.addAttribute("ox", ctrParam.getOx());
+			model.addAttribute("userScore", ctrParam.getUserScore());
 			quizForm.setQuizAnswer("");
+			setTimeExceptGuest(ctrParam.getPlayer().getId());
 			
 			return "playScreen";
 			
 		} else { // 不正解の場合
-//			redirectAttributes.addFlashAttribute("resultMessage", "不正解です・・・");
+			model.addAttribute("resultMessage", "不正解です・・・");
 			model.addAttribute("quiz", quiz);
-			model.addAttribute("ox", ox);
-			model.addAttribute("userScore", userScore);
+			model.addAttribute("ox", ctrParam.getOx());
+			model.addAttribute("userScore", ctrParam.getUserScore());
 			quizForm.setQuizAnswer("");
 			return "playScreen";
 		}
@@ -201,33 +216,36 @@ public class QuizController {
 	 * @return 引数で受け取ったクイズフォームからIDを取得してヒントを返します
 	 */
 	@PostMapping("/showHint")
-	public String showHint(@RequestParam("userId") String uId,
-			@RequestParam("quizId") String qId, 
-			@RequestParam("ox") List<String> ox,
-			@RequestParam("userScore") String uScore,
+	public String showHint(
+//			@RequestParam("userId") String uId,
+//			@RequestParam("quizId") String qId, 
+//			@RequestParam("ox") List<String> ox,
+//			@RequestParam("userScore") String uScore,
 			Model model){
-		Integer quizId = Integer.parseInt(qId);
-		Integer userId = Integer.parseInt(uId);
-		int userScore = Integer.parseInt(uScore);
-		QuizEntity quiz = quizService.selectOneQuizById(quizId);
-		UserEntity user = userService.selectOneUserById(userId);
-		QuizEntity hint = quizService.selectOneQuizById(quizId);
+//		Integer quizId = Integer.parseInt(qId);
+//		Integer userId = Integer.parseInt(uId);
+//		int userScore = Integer.parseInt(uScore);
+		QuizEntity quiz = quizService.selectOneQuizById(this.quizId);
+//		UserEntity user = userService.selectOneUserById(userId);
+		QuizEntity hint = quizService.selectOneQuizById(this.quizId);
 		model.addAttribute("hint",hint.getHint());
 		model.addAttribute("quiz", quiz);
-		model.addAttribute("user", user);
-		model.addAttribute("ox", ox);
-		model.addAttribute("userScore", userScore);
+		model.addAttribute("user", ctrParam.getPlayer());
+		model.addAttribute("ox", ctrParam.getOx());
+		model.addAttribute("userScore", ctrParam.getUserScore());
 		return "playScreen";
 	}
 
-	//TOPページへ遷移させる
-	@PostMapping("/returnTopPage")
-	public String returnTopPage(@RequestParam("userId") String uId, Model model) {
-		Integer userId = Integer.parseInt(uId);
-		UserEntity user = userService.selectOneUserById(userId);
-		model.addAttribute("user", user);
-		return "top";//小林さん担当ページ
-	}
+//	//TOPページへ遷移させる
+//	@PostMapping("/returnTopPage")
+//	public String returnTopPage(
+//			@RequestParam("userId") String uId,
+//			Model model) {
+//		Integer userId = Integer.parseInt(uId);
+//		UserEntity user = userService.selectOneUserById(userId);
+//		model.addAttribute("user", user);
+//		return "top";//小林さん担当ページ
+//	}
 	
 	/**
 	 * パス機能の実装
@@ -235,35 +253,34 @@ public class QuizController {
 	 */
 	@PostMapping("pass")
 	public String passTheQuestion(
-			@RequestParam("userId") String uId,
-			@RequestParam("quizId") String qId,
-			@RequestParam("ox") List<String> ox,
-			@RequestParam("userScore") String uScore,
+//			@RequestParam("userId") String uId,
+//			@RequestParam("quizId") String qId,
+//			@RequestParam("ox") List<String> ox,
+//			@RequestParam("userScore") String uScore,
 			QuizForm quizForm,
 			Model model) {
-		Integer quizId = Integer.parseInt(qId);
-		Integer userId = Integer.parseInt(uId);
-		int userScore = Integer.parseInt(uScore);
-		UserEntity user = userService.selectOneUserById(userId);
+//		Integer quizId = Integer.parseInt(qId);
+//		Integer userId = Integer.parseInt(uId);
+//		int userScore = Integer.parseInt(uScore);
+//		UserEntity user = userService.selectOneUserById(userId);
 		
-		ox.set(quizId,"false");
-		model.addAttribute("user", user);
+		ctrParam.getOx().set(this.quizId,"false");
+		model.addAttribute("user", ctrParam.getPlayer());
 		
-		Integer quizNum = quizId;
-		quizNum++;
+		this.quizId += 1;
 		
 		// 最終問題の場合
-		if(quizNum > quizService.getCountQuestion()) {
-			ox.remove(0);
-			model.addAttribute("ox",ox);
-			model.addAttribute("userScore",userScore);
+		if(this.quizId > quizService.getCountQuestion()) {
+			ctrParam.getOx().remove(0);
+			model.addAttribute("ox",ctrParam.getOx());
+			model.addAttribute("userScore",ctrParam.getUserScore());
 			return "quizResult"; 
 		}
 		
-		QuizEntity nextQuiz = quizService.selectOneQuizById(quizNum);
+		QuizEntity nextQuiz = quizService.selectOneQuizById(this.quizId);
 		model.addAttribute("quiz", nextQuiz);
-		model.addAttribute("ox", ox);
-		model.addAttribute("userScore", userScore);
+		model.addAttribute("ox", ctrParam.getOx());
+		model.addAttribute("userScore", ctrParam.getUserScore());
 		quizForm.setQuizAnswer("");
 		
 		return "playScreen";

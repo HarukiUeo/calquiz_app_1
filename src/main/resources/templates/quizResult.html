@@ -148,19 +148,23 @@ body {
 			<tr>
 				<th>クイズNo.</th>
 				<th>　正誤　 </th>
+				<th>　解説　 </th>
 			</tr>
 		
 		<th:block th:each="content , s : ${ox}">
 			<tr>
 				<td th:text="${s.count}" ></td>
 				<td th:text="${content=='true'}?'〇':'✕'"></td>
+				<td>
+					<button id="2" th:onclick="showExplain(2)|">ボタン[[${s.count}]]</button>
+				</td>
 			</tr>
 		</th>
 	</table>
 	<br>
-	<form th:action="@{/score}" method="post" th:object="${user}" th:align="CENTER">
-		<input type="hidden" name="userId" th:value="${user.id}">
-		<input type="hidden" name="userScore" th:value="${userScore}">
+	<form th:action="@{/score}" method="post" th:align="CENTER">
+<!--		<input type="hidden" name="userId" th:value="${user.id}">-->
+<!--		<input type="hidden" name="userScore" th:value="${userScore}">-->
        	<button class="ranking-button" type="submit">ランキング</button>
 	</form>
 	

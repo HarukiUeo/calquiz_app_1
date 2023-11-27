@@ -8,8 +8,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.quiz.component.ControllerParameter;
 import com.example.quiz.entity.UserEntity;
 import com.example.quiz.entity.UserTimeEntity;
 import com.example.quiz.form.UserForm;
@@ -39,7 +39,11 @@ public class PageController {
 	
 	public static final int GUEST_ID=1;
 	
-	private UserEntity player; 
+	@Autowired
+	ControllerParameter ctrParam;
+	
+	
+//	private UserEntity player; 
 
 	@ModelAttribute
 	public UserForm setUpForm() {
@@ -62,22 +66,22 @@ public class PageController {
 	@GetMapping("showHome")
 	public String showHome(Model model) {
 		UserEntity user = userService.selectOneUserById(GUEST_ID);
-		
-		this.player = user;
-		
+		ctrParam.setPlayer(user);
 		model.addAttribute("user",user);
 		return "home";
 	}
 
 	@PostMapping("showForm")
-	public String showForm(UserLogForm userLogForm, @RequestParam("userId") String uId, Model model) {
-		Integer userId = Integer.parseInt(uId);
-		UserEntity user = userService.selectOneUserById(userId);
+	public String showForm(UserLogForm userLogForm,
+//			@RequestParam("userId") String uId,
+			Model model) {
+//		Integer userId = Integer.parseInt(uId);
+//		UserEntity user = userService.selectOneUserById(userId);
 		
-		userLogForm.setName(user.getName());
-		userLogForm.setPassword(user.getPassword());
+		userLogForm.setName(ctrParam.getPlayer().getName());
+		userLogForm.setPassword(ctrParam.getPlayer().getPassword());
 		
-		model.addAttribute("user",user);
+		model.addAttribute("user",ctrParam.getPlayer());
 		return "top";
 	}
 	
@@ -87,26 +91,27 @@ public class PageController {
 	@PostMapping("confirm")
 	public String showConfirm(
 			UserLogForm userLogForm,
-			@RequestParam("userId") String uId, Model model) {
-		Integer userId = Integer.parseInt(uId);
-		UserEntity user = userService.selectOneUserById(userId);
+//			@RequestParam("userId") String uId,
+			Model model) {
+//		Integer userId = Integer.parseInt(uId);
+//		UserEntity user = userService.selectOneUserById(userId);
 		
-		userLogForm.setName(user.getName());
-		userLogForm.setPassword(user.getPassword());
+		userLogForm.setName(ctrParam.getPlayer().getName());
+		userLogForm.setPassword(ctrParam.getPlayer().getPassword());
 		
-		model.addAttribute("user", user);
+//		model.addAttribute("user", this.player);
 		
 		
 		// ユーザー名とパスワードの組み合わせが存在するか確認
 				UserEntity userV = userRepository.findByNameAndPassword(userLogForm.getName(), userLogForm.getPassword());
 				if (userV == null) {
 					model.addAttribute("errorMessage", "ユーザー名もしくはパスワードが違います");
-					model.addAttribute("user", this.player);
+					model.addAttribute("user", ctrParam.getPlayer());
 					return "top";
 				}
 
 				// ログイン状態になり、スタート画面に進む
-				user.setLoggedin(true);
+				userV.setLoggedin(true);
 				userRepository.save(userV);
 				model.addAttribute("user", userV);
 		
@@ -189,9 +194,10 @@ public class PageController {
 		userTime.setUser(user);
 		userTimeRepository.save(userTime);
 		
+		ctrParam.setPlayer(user);
 
 		// ログイン状態になり、スタート画面に進む
-		model.addAttribute("user", user);
+		model.addAttribute("user", ctrParam.getPlayer());
 		return "start";
 	}
 
@@ -201,7 +207,7 @@ public class PageController {
 			BindingResult bindingResult,
 			Model model) {
 		if (bindingResult.hasErrors()) {
-			model.addAttribute("user", this.player);
+			model.addAttribute("user", ctrParam.getPlayer());
 			return "top";
 		}
 
@@ -209,10 +215,11 @@ public class PageController {
 		UserEntity user = userRepository.findByNameAndPassword(userLogForm.getName(), userLogForm.getPassword());
 		if (user == null) {
 			model.addAttribute("errorMessage", "ユーザー名もしくはパスワードが違います");
-			model.addAttribute("user", this.player);
+			model.addAttribute("user", ctrParam.getPlayer());
 			return "top";
 		}
-
+		
+		ctrParam.setPlayer(user);
 		// ログイン状態になり、スタート画面に進む
 		user.setLoggedin(true);
 		userRepository.save(user);
@@ -226,17 +233,19 @@ public class PageController {
 	 */
 	// ログアウト処理
 	@PostMapping("logout")
-	public String logoutUser(@RequestParam("userId") String uId,Model model) {
-		Integer userId = Integer.parseInt(uId);
-		UserEntity user = userService.selectOneUserById(userId);
+	public String logoutUser(
+//			@RequestParam("userId") String uId,
+			Model model) {
+//		Integer userId = Integer.parseInt(uId);
+		UserEntity user = ctrParam.getPlayer();
 		if (user != null) {
 			// ログイン状態を解除
 			user.setLoggedin(false);
 			userRepository.save(user);
 		}
 		
-		this.player = userService.selectOneUserById(GUEST_ID);
-		model.addAttribute("user", player);
+		ctrParam.setPlayer(userService.selectOneUserById(GUEST_ID));
+		model.addAttribute("user", ctrParam.getPlayer());
 		// 最初の名前入力画面に戻る
 		return "top";
 	}

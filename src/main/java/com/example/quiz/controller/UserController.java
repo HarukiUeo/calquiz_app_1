@@ -8,37 +8,40 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.quiz.component.ControllerParameter;
 import com.example.quiz.entity.UserEntity;
 import com.example.quiz.service.UserServiceImpl;
 
 /**
  * @author Haruki Ueo
- * @author Yuma Matui
+ * @author Yuma Matsui
  * @version 1.0.1
  */
 @Controller
 public class UserController {
 	@Autowired
 	private UserServiceImpl userService;
-
+	
+	@Autowired
+	ControllerParameter ctrParam;
 
 
 	@PostMapping("score")
 	public String showTopScores(
-			@RequestParam("userId") String id,
-			@RequestParam("userScore") String uScore,
+//			@RequestParam("userId") String id,
+//			@RequestParam("userScore") String uScore,
 			Model model) {
 
-		Integer userId = Integer.parseInt(id);
-		Integer userScore = Integer.parseInt(uScore);
-		UserEntity user = userService.selectOneUserById(userId);
+//		Integer userId = Integer.parseInt(id);
+//		Integer userScore = Integer.parseInt(uScore);
+//		UserEntity user = userService.selectOneUserById(userId);
 
 
 		// IDが0はゲスト(アカウント持ちユーザーのみデータベースに保存)
 		// ◆アカウントユーザーは前回のスコアと比べて良いほうを残したい
-		if(userId!=PageController.GUEST_ID) {
-			user.setScore(userScore);
-			userService.saveUser(user);
+		if(ctrParam.getPlayer().getId() != ControllerParameter.GUEST_ID) {
+			ctrParam.getPlayer().setScore(ctrParam.getUserScore());
+			userService.saveUser(ctrParam.getPlayer());
 		}
 
 		List<UserEntity> topScores = userService.findTop10ByOrderByScoreDesc();
@@ -62,18 +65,32 @@ public class UserController {
 			user1.setRank(playerRank);
 			userService.saveUser(user1);
 		}
+		
 
-		model.addAttribute("newUser",user);
-		model.addAttribute("userScore",userScore);
+		model.addAttribute("newUser",userService.selectOneUserById(ctrParam.getPlayer().getId()));
+		model.addAttribute("userScore",ctrParam.getUserScore());
 		return "score";
+	}
+	
+	@PostMapping("explanation")
+	public String showExplanation(
+			@RequestParam("explanation") String explanationId,
+			Model model) {
+		int explainId = Integer.parseInt(explanationId);
+		
+		model.addAttribute("explainId",explainId);
+		model.addAttribute("ox",ctrParam.getOx());
+		return "explain";
 	}
 
 	//ユーザーIDを保持したままスタートページに移動
 	@PostMapping("start")	
-	public String startGame(@RequestParam("userId") String id,Model model) {
-		Integer userId = Integer.parseInt(id);
-		UserEntity user = userService.selectOneUserById(userId);
-		model.addAttribute("user",user);
+	public String startGame(
+//			@RequestParam("userId") String id,
+			Model model) {
+//		Integer userId = Integer.parseInt(id);
+//		UserEntity user = userService.selectOneUserById(userId);
+		model.addAttribute("user",ctrParam.getPlayer());
 		return "start";
 	}
 

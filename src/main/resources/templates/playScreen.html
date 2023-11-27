@@ -60,7 +60,7 @@
 	    font-weight: bold;
 }
 /* 文字を青白くネオンに */
-	.your-answer,answer-ng {
+	.your-answer,.answer-ng {
 		text-shadow: 0 0 1px #8080ed, 0 0 3px #8080ed, 0px 0px 6px #8080ed, 0 0 10px #8080ed, 0 0 30px #8080ed, 0 0 50px #8080ed;
 	    color: #fff;
 	    margin-bottom: 1rem;
@@ -98,44 +98,80 @@
 		border: solid #4eb4c2 1px;
 		background: #fafafa;
 	}
+	#quizImage {
+      transition: 8s;
+    }
+    #hintText{
+		visibility: hidden;
+	}
+    
 </style>
 
 </head>
 <body align="CENTER">
 <!-- 問題表示フォーム -->
-<!--	<div th:each="quiz, iterStat : ${quizzes}">-->
 	<div class="main-content">
 		<p th:text="${'問題' + quiz.id}"></p>
 		
 	<!-- ヒント表示フォーム -->
-		<form th:action="@{/showHint}" method="post">
-			<input type="hidden" name="userId" th:value="${user.Id}">
-    		<input type="hidden" name="quizId" th:value="${quiz.id}" />
-    		<input type="hidden" name="ox" th:value="${ox}">
-			<input type="hidden" name="userScore" th:value="${userScore}">
-    		<p th:if="${hint}"th:text="${hint}"></p>
-    		<button type="submit" th:unless="${hint}">ヒントを見る</button>
-		</form>
-		<img th:src="@{quizimages/{imageName}(imageName=${'image' + quiz.id + '.PNG'})}" alt="Quiz Image">
+<!--		<form th:action="@{/showHint}" method="post">-->
+		<a id="hintText">
+    		<p th:text="${quiz.hint}"></p>
+		</a>
+    	<button id="hintButton" th:onclick="|showHint(__${quiz.id}__)|">ヒントを見る</button>
+<!--		</form>-->
+	<img th:src="@{quizimages/{imageName}(imageName=${'image' + quiz.id + '.PNG'})}" alt="Quiz Image" id="quizImage">
+	<script language="javascript" type="text/javascript">
+		
+		
+		function showHint(quizNum) {
+        	var hintParagraph = document.getElementById('hintText');
+			var quizImage = document.getElementById('quizImage');
+			hintParagraph.style.visibility = (hintParagraph.style.visibility = 'hidden') ? 'visible' : 'hidden';
+			
+			if(quizNum === 3){
+				quizImage.style.transform = 'rotate(360deg)';
+			}
+			disableButton();
+			window.setTimeout(ableButton,5000);
+    	}
+		function disableButton(){
+			document.getElementById("answerButton").disabled=true;
+		}
+		function ableButton(){
+			document.getElementById("answerButton").disabled=false;
+		}
+    	
+	</script>
+<!--    	$(".hintButton").on('click', function(){-->
+
+<!--			//（１）押せなくする-->
+<!--			function LikesBtnDisable(){-->
+<!--    			answerButton.addClass("isDisable");-->
+<!--				clearInterval(statusDis);-->
+<!--    		}-->
+<!--    		//（２）押せるようにする-->
+<!--    		function LikesBtnAble(){-->
+<!--				answerButton.removeClass("isDisable");-->
+<!--				clearInterval(statusAble);-->
+<!--			}-->
+<!--			function LikesBtnClicked(){-->
+<!--				statusDis  = setInterval(LikesBtnDisable , 1); //ボタンを押した直後に（１）を呼び出し-->
+<!--				statusAble = setInterval(LikesBtnAble , 3000); //ボタンを押して３秒後に（２）を呼び出し-->
+<!--			}-->
+<!--			LikesBtnClicked();-->
+<!--  		});-->
 	</div>
 	
 <!-- 入力フォーム -->
 	<form th:action="@{/submitAnswer}" method="post" th:object="${quizForm}">
-		<input type="hidden" name="userId" th:value="${user.Id}">
-		<input type="hidden" name="quizId" th:value="${quiz.id}">
-		<input type="hidden" name="ox" th:value="${ox}">
-		<input type="hidden" name="userScore" th:value="${userScore}">
 		<label for="userAnswer" class="your-answer">あなたの解答:</label>
 		<input class="answer-area" type="text" th:field="*{quizAnswer}">
-		<input type="submit" value="回答する">
+		<input id="answerButton" type="submit" value="回答する">
 	</form>
 	
 	<!-- パス機能 -->
 	<form th:action="@{/pass}" method="post">
-		<input type="hidden" name="userId" th:value="${user.Id}">
-		<input type="hidden" name="quizId" th:value="${quiz.id}">
-		<input type="hidden" name="ox" th:value="${ox}">
-		<input type="hidden" name="userScore" th:value="${userScore}">
 		<input type="submit" value="PASS">
 	</form>
 	
@@ -144,7 +180,6 @@
 	
 <!-- ボタン -->
 	<form th:action="@{/showForm}" method="post">
-		<input type="hidden" name="userId" th:value="${user.Id}">
 		<button type="submit">TOPページへ戻る</button>
 	</form>
 	

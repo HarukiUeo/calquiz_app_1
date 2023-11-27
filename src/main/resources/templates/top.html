@@ -113,7 +113,6 @@
 			   
    			 <form class="EnterName" th:action="@{/confirm}" method="post" th:object="${userLogForm}">
 
-        		 <input type="hidden" name="userId" th:value="${user.Id}">
        			 <input id="inName" type="text" name="userName" th:value="${user.name}"/>
      			 <input id="inPass" type="password" name="userPassword" th:value="${user.password}"/>
 		  	 	 <button type="submit">play</button></p>
@@ -128,7 +127,6 @@
         		<button onclick="toggleLoginForm()">ログイン</button>
 
         		<form th:action="@{/logout}" method="post">
-					<input type="hidden" name="userId" th:value="${user.Id}">
             		<button type="submit">ログアウト</button>
         		</form>
 			 </div>
