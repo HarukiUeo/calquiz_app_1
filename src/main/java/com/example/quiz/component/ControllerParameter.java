@@ -12,21 +12,11 @@ import lombok.Data;
 @Component
 public class ControllerParameter {
 	
-//	@Autowired
-//	PageController pageController;
-//
-//	@Autowired
-//	QuizController quizController;
-//
-//	@Autowired
-//	UserController userController;
-//	
-	
 	public static final int GUEST_ID=1;
 	
 	private UserEntity player;
 	
-	private List<String> ox ;
+	private List<String> isTrue ;
 	
 	private int userScore ;
 	

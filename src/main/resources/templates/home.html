@@ -1,46 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: auto;
-    }
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		body {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+			margin: auto;
+			background-color: #000;
+		}
 
-    .large-button {
-      padding: 20px 100px;
-      font-size: 65px;
-      margin-bottom: 20px;
-    }
-	
-    .button-container {
-      display: flex;
-      flex-direction: column;
-      margin-top: 20px;
-    }
-
-    .small-button {
-      margin: 10px auto;
-      padding: 10px 100px;
-      font-size: 16px;
-    }
-  </style>
+		button {
+			visibility: hidden;
+		}
+	</style>
 </head>
-<body>
-	<form th:action="@{/showForm}" method="post">
-		<button type="submit"><img src="quizimages/next2.png" alt=""/></button>
-	</form>
 
-	<button type="submit"><img src="quizimages/next2.png" alt=""/></button>
-	<div class="button-container">
-		<button class="small-button" style="margin-bottom: 200px;">ボタン3</button>
+<body>
+
+	<div>
+		<img src="images/homeimage.gif" usemap="#ImageMap" alt="ホーム画像" />
+		<map name="ImageMap">
+			<!--  ハンバーガー-->
+			<form th:action="@{/showForm}" method="post">
+				<button type="submit">
+					<area shape="rect" coords="380,329,627,621" alt="" />
+				</button>
+			</form>
+
+			<!--  ポテト-->
+			<form th:action="@{/showPotato}" method="post">
+				<button type="submit">
+					<area shape="rect" coords="136,315,322,620" alt="" />
+				</button>
+			</form>
+			<!--  メニュー-->
+			<area shape="rect" coords="15,13,471,283" href="#" alt="" />
+			<!--  ＞＞＞-->
+			<area shape="rect" coords="527,172,694,266" href="#" alt="" />
+		</map>
 	</div>
 
 </body>
+
 </html>

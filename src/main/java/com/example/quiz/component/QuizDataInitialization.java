@@ -24,14 +24,16 @@ public class QuizDataInitialization {
 
     @PostConstruct
     public void init() {
-        createAndSaveQuizIfNotExists("image1", "かめら","hint1");
-        createAndSaveQuizIfNotExists("image2", "ROBOT","hint2");
-        createAndSaveQuizIfNotExists("image3", "8","hint3");
-        createAndSaveQuizIfNotExists("image4", "FISH","hint4");
-        createAndSaveQuizIfNotExists("image5", "タイム","hint5");
-        createAndSaveQuizIfNotExists("image6", "地球","hint6");
-        createAndSaveQuizIfNotExists("image7", "ピーチ","hint7");
-        createAndSaveQuizIfNotExists("image8", "PERFECT","hint8");
+    	 createAndSaveQuizIfNotExists("image1", "かめら","表の形をよく見ると");
+         createAndSaveQuizIfNotExists("image2", "ROBOT","色に注目");
+         createAndSaveQuizIfNotExists("image3", "8","視点を変えてみて");
+         createAndSaveQuizIfNotExists("image4", "FISH","問題文の注意書きがヒント");
+         createAndSaveQuizIfNotExists("image5", "タイム","符号に注目");
+         createAndSaveQuizIfNotExists("image6", "地球","消防を呼ぶには？");
+         createAndSaveQuizIfNotExists("image7", "ピーチ","矢印の向きに注目");
+         createAndSaveQuizIfNotExists("image8", "4","年に一度交代します");
+         createAndSaveQuizIfNotExists("image9", "えら","共通して足りないものは？");
+         createAndSaveQuizIfNotExists("image10", "たんてい","もんだいぶんにちゅうもく");
     }
     /**
      * 引数で受け取ったquizNameとanswerをデータベースに登録するメソッドです。

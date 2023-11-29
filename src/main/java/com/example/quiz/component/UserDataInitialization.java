@@ -31,7 +31,7 @@ public class UserDataInitialization {
 	        if (existingName == null) {
 	            // 既存のデータがない場合に新しいデータを作成して保存
 	            UserEntity user = new UserEntity();
-	            user.setId(2);
+	            user.setId(1);
 	            user.setName("ゲスト");
 	            user.setPassword("gest");
 	            user.setLoggedin(false);

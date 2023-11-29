@@ -31,9 +31,6 @@ public class PageController {
 	@Autowired
 	private UserServiceImpl userService;
 
-//	@Autowired
-//	private QuizServiceImpl quizService;
-	
 	@Autowired
 	private UserTimeRepository userTimeRepository;
 	
@@ -42,9 +39,6 @@ public class PageController {
 	@Autowired
 	ControllerParameter ctrParam;
 	
-	
-//	private UserEntity player; 
-
 	@ModelAttribute
 	public UserForm setUpForm() {
 		return new UserForm();
@@ -73,76 +67,35 @@ public class PageController {
 
 	@PostMapping("showForm")
 	public String showForm(UserLogForm userLogForm,
-//			@RequestParam("userId") String uId,
 			Model model) {
-//		Integer userId = Integer.parseInt(uId);
-//		UserEntity user = userService.selectOneUserById(userId);
-		
 		userLogForm.setName(ctrParam.getPlayer().getName());
 		userLogForm.setPassword(ctrParam.getPlayer().getPassword());
-		
 		model.addAttribute("user",ctrParam.getPlayer());
 		return "top";
 	}
-	
-
 	
 	// ゲストモード用のコントローラー
 	@PostMapping("confirm")
 	public String showConfirm(
 			UserLogForm userLogForm,
-//			@RequestParam("userId") String uId,
 			Model model) {
-//		Integer userId = Integer.parseInt(uId);
-//		UserEntity user = userService.selectOneUserById(userId);
-		
 		userLogForm.setName(ctrParam.getPlayer().getName());
 		userLogForm.setPassword(ctrParam.getPlayer().getPassword());
 		
-//		model.addAttribute("user", this.player);
-		
-		
 		// ユーザー名とパスワードの組み合わせが存在するか確認
-				UserEntity userV = userRepository.findByNameAndPassword(userLogForm.getName(), userLogForm.getPassword());
-				if (userV == null) {
-					model.addAttribute("errorMessage", "ユーザー名もしくはパスワードが違います");
-					model.addAttribute("user", ctrParam.getPlayer());
-					return "top";
-				}
+		UserEntity userV = userRepository.findByNameAndPassword(userLogForm.getName(), userLogForm.getPassword());
+		if (userV == null) {
+			model.addAttribute("errorMessage", "ユーザー名もしくはパスワードが違います");
+			model.addAttribute("user", ctrParam.getPlayer());
+			return "top";
+		}
 
-				// ログイン状態になり、スタート画面に進む
-				userV.setLoggedin(true);
-				userRepository.save(userV);
-				model.addAttribute("user", userV);
-		
+		// ログイン状態になり、スタート画面に進む
+		userV.setLoggedin(true);
+		userRepository.save(userV);
+		model.addAttribute("user", userV);
 		return "start";
 	}
-
-	
-	// GETメソッド制限のため修正
-	/**
-	 * "/send" への POST リクエストを処理し、"/show" にリダイレクトします。
-	 *
-	 * @author Haruki Ueo
-	 * @return "/show" にリダイレクトするためのビューを表す文字列。
-	 */
-	//redirectじゃないとplayScreen.htmlのquiz.idにnull値が入るようになっていたので修正しています。
-	//恐らくQuizControllerが上手く処理されない為。
-//	@PostMapping("send")
-//	public String showQuizView(@RequestParam("userId") String id, Model model,
-//			RedirectAttributes redirectAttributes) {
-//		Integer userId = Integer.parseInt(id);
-////		redirectAttributes.addAttribute("userId", userId);
-//		//１問目から表示されるように
-////		redirectAttributes.addAttribute("quizNum", 1);
-////		UserEntity user = userService.selectOneUserById(userId);
-////		user.setScore(0);
-////		userRepository.save(user);
-//
-//
-//		return "redirect:/show";
-//	}
-
 
 	/**
 	 * ユーザー新規登録機能、ログイン機能を実装
@@ -178,8 +131,6 @@ public class PageController {
 			return "registerPage";
 		}
 
-
-
 		// 新しいユーザーを登録
 		UserEntity user=new UserEntity();
 		user.setId(user.getId());
@@ -189,11 +140,9 @@ public class PageController {
 		user.setRank(0);
 		user.setScore(0);
 		userRepository.save(user);
-
     	UserTimeEntity userTime = new UserTimeEntity();
 		userTime.setUser(user);
 		userTimeRepository.save(userTime);
-		
 		ctrParam.setPlayer(user);
 
 		// ログイン状態になり、スタート画面に進む
@@ -218,8 +167,8 @@ public class PageController {
 			model.addAttribute("user", ctrParam.getPlayer());
 			return "top";
 		}
-		
 		ctrParam.setPlayer(user);
+		
 		// ログイン状態になり、スタート画面に進む
 		user.setLoggedin(true);
 		userRepository.save(user);
@@ -234,19 +183,20 @@ public class PageController {
 	// ログアウト処理
 	@PostMapping("logout")
 	public String logoutUser(
-//			@RequestParam("userId") String uId,
 			Model model) {
-//		Integer userId = Integer.parseInt(uId);
 		UserEntity user = ctrParam.getPlayer();
 		if (user != null) {
 			// ログイン状態を解除
 			user.setLoggedin(false);
 			userRepository.save(user);
 		}
-		
 		ctrParam.setPlayer(userService.selectOneUserById(GUEST_ID));
 		model.addAttribute("user", ctrParam.getPlayer());
-		// 最初の名前入力画面に戻る
 		return "top";
+	}
+	
+	@PostMapping("showPotato")
+	public String showPotato() {
+		return "potatoPuzzle";
 	}
 }

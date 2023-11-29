@@ -1,43 +1,45 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>クイズ画面</title>
-	
-<style>
-	body{
-		background-color:black;
-	}
-	
-	p{
-		color:white;
-	}
-	
-	button{
-    	position: relative;
-    	color: cyan;
-    	letter-spacing: 15px;
-		border: 5px solid cyan;
 
-		font-size: 15px;
-		font-family: Arial, Helvetica, sans-serif;
-		font-weight: bold;
-		transition: 1s;
-		border-radius:100px;
-		background:black;
-	}
-	
-	.main-content {
-	    position: relative;
-	    display: flex;
-	    justify-content: center;
-	    align-items: center;
-	    flex-direction: column;
-	    box-sizing: border-box;
-	    z-index: 0;
-}
-/*
+	<style>
+		body {
+			background-color: black;
+		}
+
+		p {
+			color: white;
+		}
+
+		button {
+			position: relative;
+			color: cyan;
+			letter-spacing: 15px;
+			border: 5px solid cyan;
+
+			font-size: 15px;
+			font-family: Arial, Helvetica, sans-serif;
+			font-weight: bold;
+			transition: 1s;
+			border-radius: 100px;
+			background: black;
+		}
+
+		.main-content {
+			position: relative;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+			box-sizing: border-box;
+			z-index: 0;
+		}
+
+		/*
 	.main-content::before {
 	    position: absolute;
 	    top: 0;
@@ -50,138 +52,179 @@
 	    z-index: -1;
 }
 */
-	.main-content {
-	    text-shadow: 0 0 1px #8080ed, 0 0 3px #8080ed, 0px 0px 6px #8080ed, 0 0 10px #8080ed, 0 0 30px #8080ed, 0 0 50px #8080ed;
-	    color: #fff;
-}
+		.main-content {
+			text-shadow: 0 0 1px #8080ed, 0 0 3px #8080ed, 0px 0px 6px #8080ed, 0 0 10px #8080ed, 0 0 30px #8080ed, 0 0 50px #8080ed;
+			color: #fff;
+		}
 
-	.main-content {
-	    font-size: 20px;
-	    font-weight: bold;
-}
-/* 文字を青白くネオンに */
-	.your-answer,.answer-ng {
-		text-shadow: 0 0 1px #8080ed, 0 0 3px #8080ed, 0px 0px 6px #8080ed, 0 0 10px #8080ed, 0 0 30px #8080ed, 0 0 50px #8080ed;
-	    color: #fff;
-	    margin-bottom: 1rem;
-	    font-size: 20px;
-	    font-weight: bold;
-}
+		.main-content {
+			font-size: 20px;
+			font-weight: bold;
+		}
 
-	button{
-    	position: relative;
-    	color: cyan;
-    	letter-spacing: 5px;
-		border: 5px solid cyan;
-		padding: 0px;
-		font-size: 20px;
-		font-family: Arial, Helvetica, sans-serif;
-		font-weight: bold;
-		transition: 1s;
-		border-radius:100px;
-		background:black;
-	}
-	button:hover
-	{
-		box-shadow: 0 5px 50px 0 cyan inset,0 5px 50px 0 cyan,
-		0 5px 50px 0 cyan inset,0 5px 50px 0 cyan;
-		text-shadow: 0 0 5px cyan;
-	}
-	.answer-area {
-		border: 1px solid #555;
-		-webkit-border-radius: 6px;
-		-moz-border-radius: 6px;
-		border-radius: 6px;
-		-webkit-box-shadow: 0px 1px 10px #488a9e;
-		-moz-box-shadow: 0px 1px 10px #488a9e;
-		box-shadow: 0px 1px 10px #488a9e;
-		border: solid #4eb4c2 1px;
-		background: #fafafa;
-	}
-	#quizImage {
-      transition: 8s;
-    }
-    #hintText{
-		visibility: hidden;
-	}
-    
-</style>
+		/* 文字を青白くネオンに */
+		.your-answer,
+		.answer-ng {
+			text-shadow: 0 0 1px #8080ed, 0 0 3px #8080ed, 0px 0px 6px #8080ed, 0 0 10px #8080ed, 0 0 30px #8080ed, 0 0 50px #8080ed;
+			color: #fff;
+			margin-bottom: 1rem;
+			font-size: 20px;
+			font-weight: bold;
+		}
+
+		button {
+			position: relative;
+			color: cyan;
+			letter-spacing: 5px;
+			border: 5px solid cyan;
+			padding: 0px;
+			font-size: 20px;
+			font-family: Arial, Helvetica, sans-serif;
+			font-weight: bold;
+			transition: 1s;
+			border-radius: 100px;
+			background: black;
+		}
+
+		button:hover {
+			box-shadow: 0 5px 50px 0 cyan inset, 0 5px 50px 0 cyan,
+				0 5px 50px 0 cyan inset, 0 5px 50px 0 cyan;
+			text-shadow: 0 0 5px cyan;
+		}
+
+		.answer-area {
+			border: 1px solid #555;
+			-webkit-border-radius: 6px;
+			-moz-border-radius: 6px;
+			border-radius: 6px;
+			-webkit-box-shadow: 0px 1px 10px #488a9e;
+			-moz-box-shadow: 0px 1px 10px #488a9e;
+			box-shadow: 0px 1px 10px #488a9e;
+			border: solid #4eb4c2 1px;
+			background: #fafafa;
+		}
+
+		#quizImage {
+			transition: 8s;
+		}
+
+		#hintText {
+			visibility: hidden;
+		}
+	</style>
 
 </head>
+
 <body align="CENTER">
-<!-- 問題表示フォーム -->
+	<!-- 問題表示フォーム -->
 	<div class="main-content">
 		<p th:text="${'問題' + quiz.id}"></p>
-		
-	<!-- ヒント表示フォーム -->
-<!--		<form th:action="@{/showHint}" method="post">-->
-		<a id="hintText">
-    		<p th:text="${quiz.hint}"></p>
-		</a>
-    	<button id="hintButton" th:onclick="|showHint(__${quiz.id}__)|">ヒントを見る</button>
-<!--		</form>-->
-	<img th:src="@{quizimages/{imageName}(imageName=${'image' + quiz.id + '.PNG'})}" alt="Quiz Image" id="quizImage">
-	<script language="javascript" type="text/javascript">
-		
-		
-		function showHint(quizNum) {
-        	var hintParagraph = document.getElementById('hintText');
-			var quizImage = document.getElementById('quizImage');
-			hintParagraph.style.visibility = (hintParagraph.style.visibility = 'hidden') ? 'visible' : 'hidden';
-			
-			if(quizNum === 3){
-				quizImage.style.transform = 'rotate(360deg)';
-			}
-			disableButton();
-			window.setTimeout(ableButton,5000);
-    	}
-		function disableButton(){
-			document.getElementById("answerButton").disabled=true;
-		}
-		function ableButton(){
-			document.getElementById("answerButton").disabled=false;
-		}
-    	
-	</script>
-<!--    	$(".hintButton").on('click', function(){-->
 
-<!--			//（１）押せなくする-->
-<!--			function LikesBtnDisable(){-->
-<!--    			answerButton.addClass("isDisable");-->
-<!--				clearInterval(statusDis);-->
-<!--    		}-->
-<!--    		//（２）押せるようにする-->
-<!--    		function LikesBtnAble(){-->
-<!--				answerButton.removeClass("isDisable");-->
-<!--				clearInterval(statusAble);-->
-<!--			}-->
-<!--			function LikesBtnClicked(){-->
-<!--				statusDis  = setInterval(LikesBtnDisable , 1); //ボタンを押した直後に（１）を呼び出し-->
-<!--				statusAble = setInterval(LikesBtnAble , 3000); //ボタンを押して３秒後に（２）を呼び出し-->
-<!--			}-->
-<!--			LikesBtnClicked();-->
-<!--  		});-->
+		<!-- ヒント表示フォーム -->
+		<button id="hintButton" th:onclick="|showHint(__${quiz.id}__)|">ヒントを見る</button>
+		<a id="hintText">
+			<p th:text="${quiz.hint}"></p>
+		</a>
+		<img th:src="@{quizimages/{imageName}(imageName=${'image' + quiz.id + '.PNG'})}" alt="Quiz Image"
+			id="quizImage">
+		<script language="javascript" type="text/javascript">
+
+
+			function showHint(quizNum) {
+				var hintParagraph = document.getElementById('hintText');
+				var quizImage = document.getElementById('quizImage');
+				hintParagraph.style.visibility = (hintParagraph.style.visibility = 'hidden') ? 'visible' : 'hidden';
+
+				if (quizNum === 3) {
+					quizImage.style.transform = 'rotate(360deg)';
+				}
+				disableButton();
+				window.setTimeout(ableButton, 5000);
+			}
+			function disableButton() {
+				document.getElementById("answerButton").disabled = true;
+			}
+			function ableButton() {
+				document.getElementById("answerButton").disabled = false;
+			}
+
+		</script>
 	</div>
-	
-<!-- 入力フォーム -->
-	<form th:action="@{/submitAnswer}" method="post" th:object="${quizForm}">
+
+	<!-- 入力フォーム -->
+	<form th:action="@{/submitAnswer}" method="post" th:object="${quizForm}" autocomplete="off">
 		<label for="userAnswer" class="your-answer">あなたの解答:</label>
-		<input class="answer-area" type="text" th:field="*{quizAnswer}">
-		<input id="answerButton" type="submit" value="回答する">
+		<!-- 入力エリアにonblurイベントを追加 -->
+		<input class="answer-area" type="text" th:field="*{quizAnswer}" onblur="convertAndSet(this)" autofocus>
+		<!-- 変換後の値をサブミットするためのボタン -->
+		<button id="answerButton" type="submit">回答する</button>
 	</form>
-	
+
+	<script>
+		// ひらがなを全角に変換する関数
+		function convertHiraganaToFullWidth(str) {
+			return str.replace(/[ぁ-ん]/g, function (s) {
+				return String.fromCharCode(s.charCodeAt(0) + 0x60);
+			});
+		}
+
+		// カタカナを全角に変換する関数
+		function convertKatakanaToFullWidth(str) {
+			return str.replace(/[ァ-ン]/g, function (s) {
+				return String.fromCharCode(s.charCodeAt(0) + 0x60);
+			});
+		}
+
+		// 漢字を全角に変換する関数
+		function convertKanjiToFullWidth(str) {
+			return str.replace(/[一-龠]/g, function (s) {
+				return String.fromCharCode(s.charCodeAt(0) + 0x60);
+			});
+		}
+
+		// 全角の英数字を半角に変換する関数
+		function convertAlphanumericToHalfWidth(str) {
+			return str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function (s) {
+				return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+			});
+		}
+
+		// 入力フィールドの値を変換してセットする関数
+		function convertAndSet(ele) {
+			var val = ele.value;
+
+			// 全角で入力された場合は変換を行わない
+			if (val.match(/[ぁ-んァ-ン一-龠]/)) {
+				return;
+			}
+
+			// ひらがな、カタカナ、漢字をそれぞれ全角に変換
+			var hiraganaConvertedVal = convertHiraganaToFullWidth(val);
+			var katakanaConvertedVal = convertKatakanaToFullWidth(hiraganaConvertedVal);
+			var kanjiConvertedVal = convertKanjiToFullWidth(katakanaConvertedVal);
+
+			// 全角の英数字を半角に変換
+			var han = convertAlphanumericToHalfWidth(kanjiConvertedVal);
+
+			// 変換後の値をセット
+			ele.value = han;
+		}
+	</script>
+
+	<br>
 	<!-- パス機能 -->
 	<form th:action="@{/pass}" method="post">
-		<input type="submit" value="PASS">
+		<button type="submit">PASS</button>
 	</form>
-	
-<!-- 結果表示フォーム -->
+
+	<!-- 結果表示フォーム -->
 	<p class="answer-ng" th:text="${resultMessage}"></p>
-	
-<!-- ボタン -->
+
+	<!-- ボタン -->
 	<form th:action="@{/showForm}" method="post">
 		<button type="submit">TOPページへ戻る</button>
 	</form>
-	
+
 </body>
+
 </html>
