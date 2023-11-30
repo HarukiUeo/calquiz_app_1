@@ -1,62 +1,107 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<title>score</title>
-</head>
-<body>
-		
-	<h1 th:align="CENTER">～結果発表～</h1>
-	
-	<div th:align="CENTER">
-		<h2>Player Information</h2>
-<!--		<p th:text="${newUserMessage}">-->
-			[[${newUser.name}]]さんは[[${userScore}]]点でした。<br>
-			
-			全体ランキングの[[${newUser.rank}]]位です。
-<!--		</p>-->
-	</div>
-		
-	<div th:unless="${newUser.rank}==1" th:align="CENTER">
-<!--		<p th:text="${newUserMessage2}">-->
-			<p th:with="rankUp=1">
-				次は[[${newUser.rank}-1]]位を目指してみましょう！
-			</p>
-		</p>
-	</div>
-	
-	<br>
-	
-	<h2 th:align="CENTER">--- 全体ランキング ---</h2>
-	<table border="1" th:align="CENTER">
-		<tr>
-			<th>Rank</th>
-			<th>Name</th>
-			<th>Score</th>
-		</tr>
-		<th:block th:each="user:${topScores}">
-			<tr>
-				<td th:text="${user.rank}"></td>
-				<td th:text="${user.name}"></td>
-				<td th:text="${user.score}"></td>
-			</tr>
-		</th:block>
-		
-	</table>
-		
-	<br>
-	<div th:align="CENTER">
 
-	<form th:action="@{/start}" method="post">
-		<input type="hidden" name="userId" th:value="${newUser.id}">
-		<button type="submit">もう一度挑戦する</button>
-	</form>
-	
-	<form th:action="@{/showForm}" method="post">
-		<input type="hidden" name="userId" th:value="${newUser.id}">
-		<button type="submit">TOPページへ戻る</button>
-	</form>
+<head>
+	<meta charset="UTF-8">
+	<title>score</title>
+	<style>
+		body {
+			background-image: url("/images/scoreScreen.png");
+			background-size: contain;
+			background-repeat: no-repeat;
+			background-attachment: fixed;
+			background-position: center;
+			background-color: rgb(0, 0, 0);
+
+			text-shadow: 0 0 1px #8080ed, 0 0 3px #8080ed, 0px 0px 6px #8080ed, 0 0 10px #8080ed, 0 0 30px #8080ed, 0 0 50px #8080ed;
+			color: #fff;
+			margin-bottom: 1rem;
+			font-size: 16px;
+			font-weight: bold;
+		}
+
+		button {
+			position: relative;
+			color: cyan;
+			letter-spacing: 5px;
+			border: 5px solid cyan;
+			padding: 15px;
+			font-size: 14px;
+			font-family: Arial, Helvetica, sans-serif;
+			font-weight: bold;
+			transition: 1s;
+			border-radius: 100px;
+			background: black;
+		}
+
+		button:hover {
+			box-shadow: 0 5px 50px 0 cyan inset, 0 5px 50px 0 cyan,
+				0 5px 50px 0 cyan inset, 0 5px 50px 0 cyan;
+			text-shadow: 0 0 5px cyan;
+		}
+
+		.form-buttons {
+			display: flex;
+			justify-content: center;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="result-title">
+		<h2 th:align="CENTER">～結果発表～</h2>
 	</div>
-	
+
+	<div th:align="CENTER">
+		[[${newUser.name}]]さんは[[${userScore}]]点でした。<br>
+	</div>
+
+	<div th:unless="${isGuest}" th:align="CENTER">
+
+		<div th:if="${newUser.rank}==1">
+			<h2>おめでとうございます！</h2>
+			全体ランキングの[[${newUser.rank}]]位です。
+		</div>
+
+		<div th:unless="${newUser.rank}==1">
+			<p th:with="rankUp=1">
+				全体ランキングの[[${newUser.rank}]]位です。
+				次は[[${newUser.rank}-${rankUp}]]位を目指してみましょう！
+			</p>
+		</div>
+
+	</div>
+
+	<div th:unless="${noRanking}">
+		<h3 th:align="CENTER">----- ユーザーランキング -----</h3>
+		<table border="1" th:align="CENTER">
+			<tr>
+				<th>Rank</th>
+				<th>Name</th>
+				<th>Score</th>
+			</tr>
+			<th:block th:each="user:${topScores}">
+				<tr>
+					<td th:text="${user.rank}"></td>
+					<td th:text="${user.name}"></td>
+					<td th:text="${user.score}"></td>
+				</tr>
+			</th:block>
+		</table>
+	</div>
+
+	<br>
+	<div class="form-buttons">
+
+		<form th:action="@{/start}" method="post">
+			<button type="submit">もう一度挑戦する</button>
+		</form>
+
+		<form th:action="@{/showForm}" method="post">
+			<button type="submit">TOPページへ戻る</button>
+		</form>
+	</div>
+
 </body>
+
 </html>

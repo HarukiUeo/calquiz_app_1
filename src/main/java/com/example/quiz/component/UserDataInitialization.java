@@ -16,29 +16,29 @@ import lombok.Data;
 @Component
 @Data
 public class UserDataInitialization {
-	
+
 	private final UserRepository userRepository;
-	
+
 	@PostConstruct
-    public void init() {
-        createAndSaveUserIfNotExists();
-    }
-	
-	 private void createAndSaveUserIfNotExists() {
-	        // 既存のデータを探す
-	        UserEntity existingName = userRepository.findByName("ゲスト");
+	public void init() {
+		createAndSaveUserIfNotExists();
+	}
 
-	        if (existingName == null) {
-	            // 既存のデータがない場合に新しいデータを作成して保存
-	            UserEntity user = new UserEntity();
-	            user.setId(2);
-	            user.setName("ゲスト");
-	            user.setPassword("gest");
-	            user.setLoggedin(false);
-	            user.setRank(0);
-	            user.setScore(0);
+	private void createAndSaveUserIfNotExists() {
+		// 既存のデータを探す
+		UserEntity existingName = userRepository.findByName("ゲスト");
 
-	            userRepository.save(user);
-	        }
-	    }
+		if (existingName == null) {
+			// 既存のデータがない場合に新しいデータを作成して保存
+			UserEntity user = new UserEntity();
+			user.setId(1);
+			user.setName("ゲスト");
+			user.setPassword("gest");
+			user.setLoggedin(false);
+			user.setRank(0);
+			user.setScore(0);
+
+			userRepository.save(user);
+		}
+	}
 }

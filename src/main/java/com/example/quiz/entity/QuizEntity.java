@@ -42,4 +42,3 @@ public class QuizEntity {
 	private String hint;
 
 }
-

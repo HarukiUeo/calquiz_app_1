@@ -51,4 +51,3 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	 */
 	UserEntity findByLoggedinAndId(Boolean loggedIn,Integer userId);
 }
-

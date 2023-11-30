@@ -62,6 +62,6 @@ public class UserEntity {
 	/**
 	 * userTimeのリストを追加
 	 */
-	@OneToMany(mappedBy = "user", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	@OneToMany(mappedBy = "user", cascade = {CascadeType.ALL})
 	private List<UserTimeEntity> times;
 }

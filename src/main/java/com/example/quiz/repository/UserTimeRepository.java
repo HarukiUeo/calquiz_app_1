@@ -26,4 +26,3 @@ public interface UserTimeRepository extends JpaRepository<UserTimeEntity, Intege
 	// UserエンティティのIDに基づいてUserTimeEntityを取得
 	Optional<UserTimeEntity> findByUserId(Integer userId);
 }
-
