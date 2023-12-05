@@ -48,13 +48,13 @@ public class QuizController {
 	public static final Integer firstQuiz = 1;
 
 	/** 1問あたりの基礎配点 */
-	public static final int BASE_SCORE = 70;
+	public static final int BASE_SCORE = 100;
 
-	/** 1問あたりの時間配点(300秒) */
-	public static final int TIME_BASE_SCORE = 300;
+	/** 1問あたりの時間配点(500秒) */
+	public static final int TIME_BASE_SCORE = 600;
 
-	/** 減点スピード（10秒で1点マイナス） */
-	public static final int DIVISION_TIME = 10;
+	/** 減点スピード（1秒で1点マイナス） */
+	public static final int DIVISION_TIME = 1;
 
 	/** 現在の問題番号 */
 	private int quizId;

@@ -3,6 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<style>
 		body {
@@ -138,11 +139,16 @@
 		<h1>～POTATO PUZZLEは現在調理中です～</h1>
 		<h2>QUIZ BURGERSを召し上がりください</h2>
 		
-		<br>
+		
 		
 		<form th:action="@{/showForm}" method="post">
 			<button class="burger-button" type="submit">QUIZ BURGERSを楽しむ</button>
 		</form>
+		
+	
+		
+		
+			 <button class="burger-button" id="downloadButton">調理場へ</button>
 		
 		<br>
 		
@@ -153,4 +159,15 @@
 	</div>
 </body>
 
+	<script>
+	document.getElementById('downloadButton').addEventListener('click', function() {
+    var releaseUrl = 'https://github.com/HarukiUeo/PotetoPuzzle/archive/refs/tags/PotetoPuzzle.zip';
+    var downloadLink = document.createElement('a');
+    downloadLink.href = releaseUrl;
+    downloadLink.download = 'PotetoPuzzle.zip';
+    downloadLink.click();
+});
+</script>
+
+	
 </html>
