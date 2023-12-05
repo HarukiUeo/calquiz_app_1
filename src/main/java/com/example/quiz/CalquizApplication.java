@@ -9,4 +9,5 @@ public class CalquizApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CalquizApplication.class, args);
 	}
+	
 }
