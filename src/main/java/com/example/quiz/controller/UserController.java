@@ -29,7 +29,9 @@ public class UserController {
 			Model model) {
 		if(ctrParam.getPlayer().getId() != ControllerParameter.GUEST_ID) {
 			ctrParam.getPlayer().setScore(ctrParam.getUserScore());
+			if(ctrParam.getUserScore()>userService.selectOneUserById(ctrParam.getPlayer().getId()).getScore()) {
 			userService.saveUser(ctrParam.getPlayer());
+			}
 		}
 		List<UserEntity> topScores = userService.findTop10ByOrderByScoreDesc();
 		for(int i = 0 ; i<topScores.size();i++) {

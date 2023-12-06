@@ -53,19 +53,19 @@
 	</div>
 
 	<div th:align="CENTER">
-		[[${newUser.name}]]さんは[[${userScore}]]点でした。<br>
+	<h2>	[[${newUser.name}]]さんは[[${userScore}]]点でした。</h2>
 	</div>
 
 	<div th:unless="${isGuest}" th:align="CENTER">
 
 		<div th:if="${newUser.rank}==1">
 			<h2>おめでとうございます！</h2>
-			全体ランキングの[[${newUser.rank}]]位です。
+			[[${newUser.name}]]さんの最高スコアは全体ランキングの[[${newUser.rank}]]位です。
 		</div>
 
 		<div th:unless="${newUser.rank}==1">
 			<p th:with="rankUp=1">
-				全体ランキングの[[${newUser.rank}]]位です。
+				[[${newUser.name}]]さんの最高スコアは全体ランキングの[[${newUser.rank}]]位です。
 				次は[[${newUser.rank}-${rankUp}]]位を目指してみましょう！
 			</p>
 		</div>

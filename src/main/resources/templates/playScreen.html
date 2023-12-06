@@ -152,15 +152,37 @@
 	</div>
 
 	<!-- 入力フォーム -->
-	<form th:action="@{/submitAnswer}" method="post" th:object="${quizForm}" autocomplete="off">
-		<label for="userAnswer" class="your-answer">あなたの解答:</label>
-		<!-- 入力エリアにonblurイベントを追加 -->
-		<input class="answer-area" type="text" th:field="*{quizAnswer}" onblur="convertAndSet(this)" autofocus>
-		<!-- 変換後の値をサブミットするためのボタン -->
-		<button id="answerButton" type="submit">回答する</button>
-	</form>
+<form th:action="@{/submitAnswer}" method="post" th:object="${quizForm}" autocomplete="off" id="quizForm">
+    <label for="userAnswer" class="your-answer">あなたの解答:</label>
+    <!-- 入力エリアにonkeydownイベントを追加 -->
+    <input class="answer-area" type="text" th:field="*{quizAnswer}" onkeydown="handleKeyDown(event)" autofocus>
+    <!-- 変換後の値をサブミットするためのボタン -->
+    <button id="answerButton" type="submit" onclick="handleButtonClick()">回答する</button>
+</form>
 
-	<script>
+<script>
+    let enterKeyPressCount = 0;
+
+    // エンターキーが押されたときの処理
+    function handleKeyDown(event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); // デフォルトの動作をキャンセル
+            convertAndSet(); // 変換を行う
+            enterKeyPressCount++;
+            if (enterKeyPressCount === 2) {
+                handleButtonClick(); // ダブルクリック時の処理を実行
+                enterKeyPressCount = 0; // カウントをリセット
+            }
+        }
+    }
+
+    // クリック時の処理
+    function handleButtonClick() {
+        var form = document.getElementById("quizForm");
+        form.submit();
+    }
+    
+    
 		// ひらがなを全角に変換する関数
 		function convertHiraganaToFullWidth(str) {
 			return str.replace(/[ぁ-ん]/g, function (s) {
@@ -190,13 +212,14 @@
 		}
 
 		// 入力フィールドの値を変換してセットする関数
-		function convertAndSet(ele) {
-			var val = ele.value;
+		 function convertAndSet() {
+        var ele = document.querySelector(".answer-area");
+        var val = ele.value;
 
-			// 全角で入力された場合は変換を行わない
-			if (val.match(/[ぁ-んァ-ン一-龠]/)) {
-				return;
-			}
+        // 全角で入力された場合は変換を行わない
+        if (val.match(/[ぁ-んァ-ン一-龠]/)) {
+            return;
+        }
 
 			// ひらがな、カタカナ、漢字をそれぞれ全角に変換
 			var hiraganaConvertedVal = convertHiraganaToFullWidth(val);
@@ -206,9 +229,14 @@
 			// 全角の英数字を半角に変換
 			var han = convertAlphanumericToHalfWidth(kanjiConvertedVal);
 
-			// 変換後の値をセット
-			ele.value = han;
+        // 変換後の値をセット
+        ele.value = han;
 		}
+		
+		    // デバッグログを追加
+    console.log("変換前: " + val);
+    console.log("変換後: " + ele.value);
+    
 	</script>
 
 	<br>
